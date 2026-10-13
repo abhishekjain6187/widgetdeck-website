@@ -1,0 +1,5 @@
+# GitHub Pages builds this repo with Jekyll. The site is plain HTML, so nothing is
+# templated; this only keeps the repo's notes from being published as pages.
+exclude:
+  - README.md
+  - CLAUDE.md
