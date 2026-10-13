@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <style>.b{fill:none;stroke:#18181B;stroke-width:2.6}.f{fill:#BE185D}@media (prefers-color-scheme:dark){.b{stroke:#EDEDF0}.f{fill:#EE7AB0}}</style>
+  <style>.b{fill:none;stroke:#1C2320;stroke-width:2.6}.f{fill:#23453A}@media (prefers-color-scheme:dark){.b{stroke:#E5EAE6}.f{fill:#93C3A9}}</style>
   <rect class="b" x="3" y="7" width="17" height="22" rx="4" transform="rotate(-10 11.5 18)"/>
   <rect class="f" x="12" y="3" width="17" height="22" rx="4" transform="rotate(8 20.5 14)"/>
 </svg>

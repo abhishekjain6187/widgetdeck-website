@@ -11,8 +11,8 @@
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#F6F6F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0E0E10" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F2F2EE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1512" media="(prefers-color-scheme: dark)">
 <script>
   (function () {
     try {
@@ -23,18 +23,18 @@
 </script>
 <style>
 @font-face { font-family: "Geist"; src: url(/fonts/Geist-Variable.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: "Geist Mono"; src: url(/fonts/GeistMono-Variable.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
-:root { --bg: #F6F6F7; --ink: #18181B; --muted: #52525B; --line: #E0E0E5; --accent: #BE185D; --accent-hover: #A3134F; --on-accent: #FFF7FA; color-scheme: light; }
+@font-face { font-family: "Bricolage"; src: url(/fonts/Bricolage-Variable.woff2) format("woff2"); font-weight: 200 800; font-stretch: 75% 100%; font-display: swap; }
+:root { --bg: #F2F2EE; --ink: #1C2320; --muted: #56605B; --line: #D8DBD3; --accent: #23453A; --accent-hover: #1A372D; --on-accent: #FAFAF7; color-scheme: light; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) { --bg: #0E0E10; --ink: #EDEDF0; --muted: #A1A1AA; --line: #2A2A30; --accent: #EE7AB0; --accent-hover: #F59BC4; --on-accent: #1A0A11; color-scheme: dark; }
+  :root:not([data-theme="light"]) { --bg: #0F1512; --ink: #E5EAE6; --muted: #A3ADA7; --line: #29332E; --accent: #93C3A9; --accent-hover: #A9D2BB; --on-accent: #0F1512; color-scheme: dark; }
 }
-:root[data-theme="dark"] { --bg: #0E0E10; --ink: #EDEDF0; --muted: #A1A1AA; --line: #2A2A30; --accent: #EE7AB0; --accent-hover: #F59BC4; --on-accent: #1A0A11; color-scheme: dark; }
+:root[data-theme="dark"] { --bg: #0F1512; --ink: #E5EAE6; --muted: #A3ADA7; --line: #29332E; --accent: #93C3A9; --accent-hover: #A9D2BB; --on-accent: #0F1512; color-scheme: dark; }
 * { box-sizing: border-box; }
 body { margin: 0; min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; background: var(--bg); color: var(--ink); font: 400 17px/1.6 "Geist", ui-sans-serif, system-ui, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
 main { width: 100%; max-width: 520px; display: grid; gap: 20px; }
 .mark { width: 44px; height: 44px; }
-.code { font-family: "Geist Mono", ui-monospace, Consolas, monospace; font-size: 14px; color: var(--muted); }
-h1 { margin: 0; font-size: clamp(32px, 6vw, 44px); line-height: 1.08; letter-spacing: -.035em; font-weight: 650; }
+.code { font-size: 15px; color: var(--muted); }
+h1 { margin: 0; font: 600 clamp(36px, 7vw, 56px)/1.02 "Bricolage", "Geist", sans-serif; font-stretch: 86%; letter-spacing: -.02em; }
 p { margin: 0; color: var(--muted); }
 a.btn { justify-self: start; display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--on-accent); text-decoration: none; font-weight: 550; font-size: 15px; padding: 11px 20px; border-radius: 999px; transition: background-color .2s, transform .2s; }
 a.btn:hover { background: var(--accent-hover); }
@@ -45,7 +45,7 @@ a.btn:active { transform: scale(.98); }
 <body>
 <main>
   <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="17" height="22" rx="4" transform="rotate(-10 11.5 18)" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="12" y="3" width="17" height="22" rx="4" transform="rotate(8 20.5 14)" fill="var(--accent)"/></svg>
-  <span class="code">404</span>
+  <span class="code">Error 404</span>
   <h1>Page not found.</h1>
   <p>The page you asked for doesn't exist. Every app is on the home page, with screenshots and a demo.</p>
   <a class="btn" href="/">Back to Widgetdeck</a>
