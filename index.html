@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Widgetdeck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a "deck" of app cards up top, then one section per app with its story on the left and a live mock demo on the right. */
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --surface-2: #e3e8ef;
+  --ink: #111722;
+  --muted: #5a6577;
+  --line: #d3d9e2;
+  --accent: #2443d6;
+  --accent-ink: #ffffff;
+  --accent-soft: #dfe5ff;
+  --good: #11865f;
+  --good-soft: #d9f2e8;
+  --warn: #b5560b;
+  --warn-soft: #fbe7d6;
+  --bad: #c0283a;
+  --bad-soft: #fbdfe3;
+  --device: #1a2130;
+  --screen: #f8fafc;
+  --shadow: 0 1px 2px rgba(17,23,34,.06), 0 12px 32px -12px rgba(17,23,34,.18);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e131b; --surface: #161d28; --surface-2: #1f2836; --ink: #e8edf5; --muted: #98a3b5; --line: #2a3445;
+    --accent: #7d93ff; --accent-ink: #0b1020; --accent-soft: #232d55;
+    --good: #4cd29f; --good-soft: #143528; --warn: #f2a25c; --warn-soft: #3a2614; --bad: #ff7d8c; --bad-soft: #3d1a20;
+    --device: #05080d; --screen: #121924; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e131b; --surface: #161d28; --surface-2: #1f2836; --ink: #e8edf5; --muted: #98a3b5; --line: #2a3445;
+  --accent: #7d93ff; --accent-ink: #0b1020; --accent-soft: #232d55;
+  --good: #4cd29f; --good-soft: #143528; --warn: #f2a25c; --warn-soft: #3a2614; --bad: #ff7d8c; --bad-soft: #3d1a20;
+  --device: #05080d; --screen: #121924; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--f-body); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+a { color: var(--accent); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--f-display); line-height: 1.1; margin: 0; text-wrap: balance; }
+.label { font: 500 12px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+/* Header */
+.top { padding-block: 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand { display: flex; align-items: center; gap: 10px; font: 800 20px/1 var(--f-display); letter-spacing: -.01em; color: var(--ink); text-decoration: none; }
+.brand-mark { width: 28px; height: 28px; position: relative; }
+.brand-mark i { position: absolute; width: 18px; height: 22px; border-radius: 4px; border: 2px solid var(--ink); background: var(--surface); }
+.brand-mark i:nth-child(1) { left: 0; top: 4px; transform: rotate(-10deg); }
+.brand-mark i:nth-child(2) { left: 9px; top: 2px; background: var(--accent); border-color: var(--accent); transform: rotate(8deg); }
+.top nav { display: flex; gap: 18px; flex-wrap: wrap; }
+.top nav a { color: var(--muted); text-decoration: none; font-weight: 500; font-size: 15px; }
+.top nav a:hover { color: var(--ink); }
+
+.intro { padding-block: 40px 28px; display: grid; gap: 14px; max-width: 760px; }
+.intro h1 { font-size: clamp(34px, 6vw, 58px); font-weight: 800; letter-spacing: -.025em; }
+.intro h1 em { font-style: normal; color: var(--accent); }
+.intro p { margin: 0; color: var(--muted); font-size: 18px; max-width: 60ch; }
+
+/* Deck of app cards */
+.deck { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; padding-block: 8px 56px; }
+.deck-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 12px; text-decoration: none; color: var(--ink); transition: transform .15s ease, border-color .15s ease; }
+.deck-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.deck-card .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.deck-card h3 { font-size: 22px; font-weight: 700; }
+.deck-card p { margin: 0; color: var(--muted); font-size: 15px; }
+.deck-card.add { border-style: dashed; background: transparent; align-content: center; color: var(--muted); }
+.deck-card.add:hover { transform: none; border-color: var(--line); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 500 12px/1 var(--f-mono); padding: 6px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink); white-space: nowrap; }
+.chip.status { background: var(--warn-soft); color: var(--warn); }
+.tbd { font: 500 11px/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; padding: 5px 7px; border-radius: 6px; border: 1px dashed var(--muted); color: var(--muted); white-space: nowrap; }
+
+/* App sections */
+.app { padding-block: 56px; border-top: 1px solid var(--line); scroll-margin-top: 12px; }
+.app-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: start; }
+.app-info { display: grid; gap: 22px; min-width: 0; }
+.app-head { display: grid; gap: 10px; }
+.app-head h2 { font-size: clamp(30px, 4.4vw, 44px); font-weight: 800; letter-spacing: -.02em; }
+.app-head .tagline { margin: 0; font-size: 19px; color: var(--muted); max-width: 52ch; }
+.block { display: grid; gap: 8px; }
+.block p { margin: 0; max-width: 62ch; }
+.features { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.features li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; }
+.features li::before { content: ""; width: 10px; height: 10px; margin-top: 8px; border-radius: 3px; background: var(--accent); }
+.features b { font-weight: 600; }
+.steps-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; counter-reset: s; }
+.steps-list li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
+.steps-list li::before { content: counter(s); font: 500 13px/26px var(--f-mono); text-align: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); color: var(--muted); }
+.open-q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.open-q ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+
+/* Demo shell */
+.demo { position: sticky; top: 16px; display: grid; gap: 14px; min-width: 0; }
+.demo-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.dots { display: flex; gap: 6px; justify-content: center; }
+.dots button { width: 30px; height: 6px; border-radius: 3px; border: 0; padding: 0; background: var(--line); }
+.dots button[aria-current="step"] { background: var(--accent); }
+.stage { display: flex; justify-content: center; }
+.caption { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 4px; min-height: 92px; }
+.caption h3 { font-size: 18px; font-weight: 700; }
+.caption p { margin: 0; color: var(--muted); font-size: 15px; }
+.demo-nav { display: flex; justify-content: space-between; gap: 10px; }
+.btn { border: 1px solid var(--line); background: var(--surface); padding: 9px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* Phone frame */
+.phone { width: 300px; max-width: 100%; height: 600px; background: var(--device); border-radius: 42px; padding: 12px; box-shadow: var(--shadow); }
+.phone-screen { height: 100%; background: var(--screen); border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+.phone-status { display: flex; justify-content: space-between; padding: 12px 22px 4px; font: 600 12px/1 var(--f-body); }
+.phone-notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 84px; height: 22px; background: var(--device); border-radius: 12px; }
+.phone-body { flex: 1; overflow-y: auto; padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
+.scr-title { font: 700 22px/1.15 var(--f-display); }
+.scr-sub { color: var(--muted); font-size: 13px; margin-top: -6px; }
+.list { display: grid; gap: 6px; }
+.item { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-align: left; width: 100%; }
+.item .box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; color: var(--accent-ink); }
+.item.done .box { background: var(--good); border-color: var(--good); }
+.item.done .nm { text-decoration: line-through; color: var(--muted); }
+.price { font: 500 13px/1 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.total-row { display: flex; justify-content: space-between; font-weight: 600; padding: 4px 4px 0; }
+.choice { display: grid; gap: 4px; padding: 14px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; width: 100%; }
+.choice b { font-size: 15px; }
+.choice span { color: var(--muted); font-size: 13px; }
+.choice:hover { border-color: var(--accent); }
+.viewfinder { position: relative; border-radius: 16px; background: var(--surface-2); padding: 14px; overflow: hidden; }
+.receipt { background: #fffef9; color: #222; font: 400 11.5px/1.55 var(--f-mono); padding: 12px 12px 14px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.receipt .r { display: flex; justify-content: space-between; gap: 8px; }
+.receipt .r.hit { color: #11865f; }
+.receipt .r.extra { color: #b5560b; }
+.receipt .head { text-align: center; margin-bottom: 6px; }
+.receipt .bar { height: 26px; margin-top: 8px; background: repeating-linear-gradient(90deg, #222 0 2px, transparent 2px 4px, #222 4px 5px, transparent 5px 8px); }
+.scanline { position: absolute; left: 8px; right: 8px; height: 2px; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: scan 1.2s ease-in-out infinite alternate; top: 12px; }
+@keyframes scan { to { top: calc(100% - 14px); } }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--f-mono); padding: 6px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.sum-card { background: var(--warn-soft); color: var(--warn); border-radius: 14px; padding: 14px; display: grid; gap: 2px; }
+.sum-card .big { font: 800 30px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
+.sum-card span { font-size: 13px; }
+.grp { display: grid; gap: 6px; }
+.grp h4 { margin: 4px 0 0; font: 600 12px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
+.grp.missed h4 { color: var(--bad); }
+.grp.extra h4 { color: var(--warn); }
+.grp.diff h4 { color: var(--muted); }
+.line { display: flex; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); }
+.grp.missed .line { border-left: 3px solid var(--bad); }
+.grp.extra .line { border-left: 3px solid var(--warn); }
+
+/* Desktop frame */
+.desk { width: 100%; max-width: 560px; height: 420px; background: var(--device); border-radius: 14px; padding: 10px; box-shadow: var(--shadow); }
+.desk-screen { height: 100%; border-radius: 6px; overflow: hidden; position: relative; display: flex; flex-direction: column; background: linear-gradient(160deg, #2b4a8a, #1b2a4d 60%, #13203b); color: #e8edf5; font-size: 13px; }
+.desk-area { flex: 1; position: relative; padding: 14px; overflow: hidden; }
+.taskbar { height: 36px; background: rgba(10,14,22,.85); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; gap: 8px; font: 500 11px/1 var(--f-body); color: #c9d1de; }
+.taskbar .apps { display: flex; gap: 6px; }
+.taskbar .tb { width: 24px; height: 24px; border-radius: 5px; background: rgba(255,255,255,.12); display: grid; place-items: center; font: 700 10px/1 var(--f-mono); }
+.tray-btn { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 6px; border: 0; background: rgba(255,255,255,.1); color: #e8edf5; font: 500 11px/1 var(--f-body); }
+.tray-btn:hover { background: rgba(255,255,255,.2); }
+.launchers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.launch { display: grid; gap: 6px; text-align: left; padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: #e8edf5; }
+.launch:hover { background: rgba(255,255,255,.16); }
+.launch b { font-size: 14px; }
+.launch span { color: #b7c1d3; font-size: 12px; }
+.launch .ico { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; font: 700 12px/1 var(--f-mono); }
+.win { position: absolute; inset: 12px; background: #1e1e1e; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.win-title { height: 28px; background: #2d2d2d; display: flex; align-items: center; padding: 0 10px; font: 500 11px/1 var(--f-body); color: #bbb; gap: 8px; }
+.win-body { flex: 1; padding: 12px; font: 400 11.5px/1.6 var(--f-mono); color: #d4d4d4; overflow: hidden; }
+.win-status { height: 24px; background: #2443d6; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; font: 500 11px/1 var(--f-body); color: #fff; }
+.acct-chip { border: 0; background: rgba(255,255,255,.18); color: #fff; padding: 4px 8px; border-radius: 4px; font: 600 11px/1 var(--f-body); }
+.acct-chip:hover { background: rgba(255,255,255,.3); }
+.popup { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(340px, calc(100% - 24px)); background: #fbfcfe; color: #111722; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,.45); padding: 16px; display: grid; gap: 10px; animation: pop .18s ease-out; }
+.popup.corner { left: auto; right: 10px; top: auto; bottom: 10px; transform: none; width: min(280px, calc(100% - 20px)); }
+@keyframes pop { from { opacity: .4; transform: translate(-50%, -46%); } }
+.popup.corner { animation: none; }
+.popup h4 { margin: 0; font: 700 16px/1.2 var(--f-display); }
+.popup .ctx { font-size: 12px; color: #5a6577; margin-top: -6px; }
+.acct { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 9px; border: 1px solid #d3d9e2; background: #fff; text-align: left; width: 100%; color: #111722; }
+.acct:hover { border-color: #2443d6; }
+.acct.sel { border-color: #2443d6; background: #eef1ff; }
+.acct .av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 12px/1 var(--f-body); color: #fff; }
+.acct b { display: block; font-size: 13px; }
+.acct small { color: #5a6577; font-size: 11.5px; }
+.acct .key { font: 500 10.5px/1 var(--f-mono); color: #5a6577; border: 1px solid #d3d9e2; border-radius: 4px; padding: 3px 5px; }
+.popup label { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: #333; }
+.popup .go { background: #2443d6; color: #fff; border: 0; border-radius: 8px; padding: 9px; font-weight: 600; }
+.toast { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); background: #11865f; color: #fff; padding: 8px 12px; border-radius: 8px; font: 600 12px/1.3 var(--f-body); box-shadow: 0 6px 20px rgba(0,0,0,.3); white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
+.rules { background: #fbfcfe; color: #111722; border-radius: 10px; padding: 14px; display: grid; gap: 8px; }
+.rules h4 { margin: 0; font: 700 15px/1.2 var(--f-display); }
+.rule { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 10px; border: 1px solid #d3d9e2; border-radius: 8px; font-size: 12px; align-items: center; }
+.rule code { font: 500 11.5px/1.3 var(--f-mono); overflow-wrap: anywhere; }
+.rule .who { font-weight: 600; font-size: 12px; padding: 3px 8px; border-radius: 999px; color: #fff; }
+.hint { font: 500 11px/1.4 var(--f-mono); color: #b7c1d3; }
+.kbd { font: 500 11px/1 var(--f-mono); padding: 2px 5px; border: 1px solid rgba(255,255,255,.35); border-radius: 4px; }
+
+/* Screenshots / walkthrough tabs */
+.tabs { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--surface-2); }
+.tabs button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-weight: 600; font-size: 14px; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(17,23,34,.12); }
+.shot-main { display: flex; justify-content: center; align-items: center; min-height: 420px; padding: 18px; border-radius: 16px; background: var(--surface-2); }
+.shot-main img { display: block; max-width: 100%; height: auto; border-radius: 6px; box-shadow: var(--shadow); }
+.shot-main img.phone-shot { width: 270px; border-radius: 26px; border: 8px solid var(--device); }
+.shot-main img.window-shot { image-rendering: auto; }
+.thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.thumbs button { flex: 0 0 auto; border: 2px solid transparent; border-radius: 10px; padding: 0; background: var(--surface); overflow: hidden; width: 64px; height: 64px; }
+.thumbs button[aria-current="true"] { border-color: var(--accent); }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.app-icon { width: 56px; height: 56px; border-radius: 14px; }
+.deck-card .app-icon { width: 40px; height: 40px; border-radius: 10px; }
+.title-row { display: flex; align-items: center; gap: 14px; }
+
+/* Cloud Transfer mock window (fixed light look, like a real app screen) */
+.ct-win { position: absolute; inset: 10px; display: grid; grid-template-columns: 112px 1fr; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.4); font-family: var(--f-body); }
+.ct-side { background: #121838; color: #c8cde6; padding: 10px 8px; display: flex; flex-direction: column; gap: 4px; font-size: 11px; }
+.ct-side span { padding: 5px 7px; border-radius: 5px; }
+.ct-side .on { background: rgba(255,255,255,.1); color: #fff; }
+.ct-brand { display: flex; align-items: center; gap: 6px; color: #fff; font-weight: 600; font-size: 11.5px; margin-bottom: 6px; }
+.ct-brand img { width: 18px; height: 18px; border-radius: 5px; }
+.ct-main { background: #f4f6fb; color: #111722; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; overflow: hidden; }
+.ct-h { font: 700 17px/1.1 var(--f-display); }
+.ct-h small { font: 400 12px var(--f-body); color: #5a6577; margin-left: 4px; }
+.ct-steps { display: flex; gap: 12px; font-size: 11px; color: #5a6577; flex-wrap: wrap; }
+.ct-steps span { display: flex; align-items: center; gap: 5px; }
+.ct-steps i { font-style: normal; width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center; background: #e3e7f0; font-size: 10px; }
+.ct-steps .now, .ct-steps .done { color: #111722; font-weight: 600; }
+.ct-steps .now i, .ct-steps .done i { background: #2f4cf5; color: #fff; }
+.ct-from { display: flex; gap: 6px; flex-wrap: wrap; font-size: 11px; }
+.ct-from span { padding: 5px 8px; border: 1px solid #d3d9e2; border-radius: 7px; background: #fff; }
+.ct-from .sel { border-color: #2f4cf5; box-shadow: 0 0 0 1px #2f4cf5; font-weight: 600; }
+.ct-list { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; overflow: hidden; }
+.ct-row { display: grid; grid-template-columns: 18px 16px 1fr auto; gap: 8px; align-items: center; width: 100%; padding: 6px 10px; border: 0; border-bottom: 1px solid #eef1f6; background: #fff; color: #111722; font-size: 12px; text-align: left; }
+.ct-row:last-child { border-bottom: 0; }
+.ct-row:hover { background: #f5f7ff; }
+.ct-box { width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid #b8c0cf; display: grid; place-items: center; font-size: 10px; color: #fff; flex: none; }
+.ct-box.on { background: #2f4cf5; border-color: #2f4cf5; }
+.ct-radio { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #b8c0cf; }
+.ct-radio.on { border: 4px solid #2f4cf5; }
+.ct-ico { width: 14px; height: 11px; border-radius: 2px; background: #f2b33d; }
+.ct-ico.gdoc { background: #3b7cf0; width: 11px; height: 14px; }
+.ct-ico.file { background: #9aa3b5; width: 11px; height: 14px; }
+.ct-nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ct-sz { color: #5a6577; font-size: 11px; }
+.ct-foot { margin-top: auto; display: flex; justify-content: flex-end; align-items: center; font-size: 11px; color: #5a6577; }
+.ct-card { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; padding: 10px; display: grid; gap: 6px; font-size: 12px; }
+.ct-card span { color: #5a6577; font-size: 11px; }
+.ct-opt { display: flex; gap: 8px; align-items: center; border: 0; background: transparent; color: #111722; font-size: 12px; text-align: left; padding: 2px 0; }
+.ct-safe { background: #e4f4ec; color: #0e6b4b; border-radius: 7px; padding: 7px 9px; font-size: 11px; }
+.ct-go { border: 0; background: #2f4cf5; color: #fff; padding: 7px 12px; border-radius: 7px; font-weight: 600; font-size: 12px; }
+.ct-go.ghost { background: #e6eaff; color: #2f4cf5; }
+.ct-pct { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ct-pct b { font: 800 26px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.ct-pct span { font-size: 11px; font-variant-numeric: tabular-nums; }
+.ct-pct em { margin-left: auto; font-style: normal; font-size: 11px; font-weight: 600; color: #2f4cf5; background: #e6eaff; padding: 3px 8px; border-radius: 999px; }
+.ct-pct em.wait { color: #9a4a06; background: #fbe7d6; }
+.ct-pct em.ok { color: #0e6b4b; background: #e4f4ec; }
+.ct-bar { height: 6px; border-radius: 3px; background: #e3e7f0; overflow: hidden; }
+.ct-bar i { display: block; height: 100%; background: #2f4cf5; transition: width .25s linear; }
+.ct-notes { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; padding: 8px 10px; display: grid; gap: 6px; font-size: 11.5px; }
+.ct-notes .hl { color: #9a4a06; font-weight: 600; }
+@media (max-width: 480px) { .ct-win { grid-template-columns: 1fr; } .ct-side { display: none; } }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+@media (max-width: 900px) {
+  .app-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .demo { position: static; }
+}
+@media (max-width: 480px) {
+  .top nav { display: none; }
+  .desk { height: 460px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top" aria-label="Widgetdeck home"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>Widgetdeck</a>
+    <nav id="topnav" aria-label="Apps"></nav>
+  </header>
+
+  <section class="intro" id="top">
+    <span class="label">Apps in the works</span>
+    <h1>Small apps that fix <em>everyday</em> annoyances.</h1>
+    <p>Every app AJ is building, in one place. Each one has the idea, what it does, real screenshots, and a clickable walkthrough. Names are working names until they are decided.</p>
+  </section>
+
+  <section class="deck" id="deck" aria-label="All apps"></section>
+
+  <main id="apps"></main>
+
+  <footer>
+    <span>Widgetdeck · screenshots are from the current builds; walkthroughs are simplified.</span>
+    <span id="count"></span>
+  </footer>
+</div>
+
+<script>
+/* ==========================================================================
+   APPS — add a new app by appending an object to this array.
+   Fields: id, name (working name until decided), icon (optional image path),
+   tagline, platforms[], status, problem, features[{title,text}], how[], notes[],
+   screenshots[{src, caption, kind: "phone" | "window"}] (optional),
+   demo: { frame: "phone" | "desktop", init(): state, steps: [{title, caption, render(state, api)}] }
+   render() returns an HTML string; api.set(patch) updates state, api.go(i) jumps to a step.
+   Clickable elements use data-act="name"; handle them in step.on[name](state, api, el).
+   ========================================================================== */
+
+const money = n => "$" + n.toFixed(2);
+
+/* ---------- App 1: Grocery Check ---------- */
+/* Sample trip mirrors the one in the app's own screenshots. */
+const GROCERY_LIST = [
+  { id: "milk",    name: "Milk",           est: 3.50 },
+  { id: "banana",  name: "Bananas",        est: 1.50 },
+  { id: "eggs",    name: "Eggs",           est: 4.00 },
+  { id: "bread",   name: "Bread",          est: 2.80 },
+  { id: "chicken", name: "Chicken breast", est: 10.00 },
+  { id: "spinach", name: "Spinach",        est: 3.50 },
+  { id: "tomato",  name: "Tomatoes",       est: 2.50 },
+];
+const RECEIPT = [
+  { text: "GV 2% MILK GAL",       price: 3.49, match: "milk" },
+  { text: "ORG BANANAS",          price: 1.32, match: "banana" },
+  { text: "LRG EGGS 12CT",        price: 4.19, match: "eggs" },
+  { text: "WHT BREAD",            price: 2.79, match: "bread" },
+  { text: "CHKN BRST BNLS",       price: 9.87, match: "chicken" },
+  { text: "POTATO CHPS BBQ",      price: 4.29, match: null, label: "Potato Chps Bbq" },
+  { text: "2 @ 2.00 COOKIES CHOC",price: 4.00, match: null, label: "Cookies Choc Chip ×2" },
+  { text: "ICE CRM VAN",          price: 5.49, match: null, label: "Ice Crm Van" },
+];
+const RECEIPT_TAX = 1.97;
+
+function groceryCompare() {
+  const bought = new Set(RECEIPT.filter(r => r.match).map(r => r.match));
+  const missed = GROCERY_LIST.filter(i => !bought.has(i.id));
+  const extras = RECEIPT.filter(r => !r.match);
+  const got = RECEIPT.filter(r => r.match).map(r => ({ ...r, item: GROCERY_LIST.find(i => i.id === r.match) }));
+  const total = RECEIPT.reduce((s, r) => s + r.price, 0) + RECEIPT_TAX;
+  const extraTotal = extras.reduce((s, r) => s + r.price, 0);
+  const missedTotal = missed.reduce((s, i) => s + i.est, 0);
+  return { missed, extras, got, total, extraTotal, missedTotal };
+}
+
+function receiptHTML(highlight) {
+  const total = RECEIPT.reduce((s, r) => s + r.price, 0) + RECEIPT_TAX;
+  return `<div class="receipt">
+    <div class="head">FRESHWAY MARKET #214<br>10/10/2026 13:42</div>
+    ${RECEIPT.map(r => `<div class="r ${highlight ? (r.match ? "hit" : "extra") : ""}"><span>${r.text}</span><span>${r.price.toFixed(2)}</span></div>`).join("")}
+    <div class="r"><span>TAX</span><span>${RECEIPT_TAX.toFixed(2)}</span></div>
+    <div class="r" style="margin-top:6px;font-weight:500"><span>TOTAL</span><span>${total.toFixed(2)}</span></div>
+  </div>`;
+}
+
+const METHODS = {
+  photo:   { title: "Photo of receipt", text: "Read on your phone. Nothing is uploaded.", busy: "Reading the receipt photo" },
+  barcode: { title: "Scan barcodes",    text: "Scan each product's barcode to add it.",  busy: "Looking up product barcodes" },
+  paste:   { title: "Paste text",       text: "Paste an e-receipt from email.",            busy: "Reading the pasted receipt" },
+};
+
+const groceryApp = {
+  id: "grocery",
+  name: "Grocery Check",
+  tagline: "Make your grocery list, then scan the receipt to see what you forgot and what extra you bought.",
+  platforms: ["iOS", "Android"],
+  status: "Working prototype",
+  problem: "You walk out of the store and realise you forgot the spinach, and the bill is higher than planned because a few things jumped into the cart. Nothing tells you either until it is too late.",
+  features: [
+    { title: "Your list, with expected prices", text: "Add items and quantities with an optional price, so the app knows roughly what the trip should cost." },
+    { title: "Photo of the receipt", text: "Snap the paper receipt and it is read on your phone. Nothing is uploaded." },
+    { title: "Barcodes or pasted text", text: "Scan product barcodes, paste an e-receipt from email, or type items in by hand. Mix them however you like." },
+    { title: "Receipt shorthand understood", text: "Lines like \"CHKN BRST BNLS\" are matched to \"chicken breast\" automatically, and any match can be fixed with a tap." },
+    { title: "Missed and extra report", text: "See the items you missed, the items that were not on the list, and how much those extras added to the bill." },
+  ],
+  how: [
+    "Make a list at home.",
+    "Shop as usual.",
+    "Tap Check receipt, then add the receipt by photo, barcodes or pasted text.",
+    "Get the trip check: what you missed, what was extra, and what it cost.",
+  ],
+  notes: [
+    "Lists and trips stay on the phone. The only thing sent anywhere is a barcode lookup to Open Food Facts, a free public product database.",
+    "Most printed receipt barcodes only hold a transaction number, not the items, so the receipt photo is the main way in.",
+    "A web version exists for trying the sample trip and pasted text. Photo reading only works in the installed app.",
+  ],
+  screenshots: [
+    { src: "img/grocery-results.png",       caption: "The trip check: 2 missed, 3 extra items adding $13.78.", kind: "phone" },
+    { src: "img/grocery-list.png",          caption: "Building the list with expected prices.", kind: "phone" },
+    { src: "img/grocery-receipt-items.png", caption: "Adding what you bought: photo, barcodes or pasted text.", kind: "phone" },
+    { src: "img/grocery-home.png",          caption: "Home: your lists and past trips.", kind: "phone" },
+  ],
+  demo: {
+    frame: "phone",
+    init: () => ({ method: null, scanning: false, scanned: false }),
+    steps: [
+      {
+        title: "Make the list",
+        caption: "Add what you need before you leave. Expected prices are optional but let the app tell you what the trip should cost.",
+        render: s => {
+          const est = GROCERY_LIST.reduce((t, i) => t + i.est, 0);
+          return `<div class="scr-title">Weekly shop</div>
+          <div class="scr-sub">${GROCERY_LIST.length} items · about ${money(est)}</div>
+          <div class="list">${GROCERY_LIST.map(i => `<div class="item"><span class="box"></span><span class="nm">${i.name}</span><span class="price">${money(i.est)}</span></div>`).join("")}</div>`;
+        },
+      },
+      {
+        title: "Add the receipt",
+        caption: "After checkout, tap Check receipt and choose how to add what you bought. Pick one to watch the app match each line to your list.",
+        on: {
+          method: (s, api, el) => {
+            api.set({ method: el.dataset.m, scanning: true, scanned: false });
+            setTimeout(() => api.set({ scanning: false, scanned: true }), 1500);
+          },
+          rescan: (s, api) => api.set({ method: null, scanning: false, scanned: false }),
+        },
+        render: s => {
+          if (!s.method) return `<div class="scr-title">What you bought</div>
+            <div class="scr-sub">Use any mix of these.</div>
+            ${Object.entries(METHODS).map(([k, m]) => `<button class="choice" data-act="method" data-m="${k}"><b>${m.title}</b><span>${m.text}</span></button>`).join("")}`;
+          if (s.scanning) return `<div class="scr-title">${METHODS[s.method].busy}…</div>
+            <div class="viewfinder">${receiptHTML(false)}<div class="scanline"></div></div>`;
+          const c = groceryCompare();
+          return `<div class="scr-title">Receipt matched</div>
+            <div><span class="pill">${c.got.length} from your list · ${c.extras.length} extra</span></div>
+            <div class="viewfinder">${receiptHTML(true)}</div>
+            <button class="choice" data-act="rescan" style="text-align:center"><b>Try another way</b></button>`;
+        },
+      },
+      {
+        title: "See what you missed",
+        caption: "The trip check shows what never made it into the cart, what came home that was not on the list, and how much the extras cost you.",
+        render: s => {
+          const c = groceryCompare();
+          const pct = Math.round(c.extraTotal / c.total * 100);
+          return `<div class="scr-title">Weekly shop</div>
+          <div class="scr-sub">10/10/2026 · ${money(c.total)} spent</div>
+          <div class="sum-card"><span>${c.extras.length} extra items</span><div class="big">+${money(c.extraTotal)}</div><span>${pct}% of your bill · ${c.missed.length} missed, about ${money(c.missedTotal)} not bought</span></div>
+          <div class="grp missed"><h4>You missed · ${c.missed.length}</h4>${c.missed.map(i => `<div class="line"><span>${i.name}</span><span class="price">${money(i.est)}</span></div>`).join("")}</div>
+          <div class="grp extra"><h4>Not on your list · ${c.extras.length}</h4>${c.extras.map(r => `<div class="line"><span>${r.label}</span><span class="price">${money(r.price)}</span></div>`).join("")}</div>
+          <div class="grp diff"><h4>Got from your list · ${c.got.length}</h4>${c.got.map(g => `<div class="line"><span>${g.item.name}</span><span class="price">${money(g.price)}</span></div>`).join("")}</div>`;
+        },
+      },
+    ],
+  },
+};
+
+/* ---------- App 2: Claude account switcher for Windows ---------- */
+const ACCOUNTS = [
+  { id: "work",     name: "Work",     color: "#11865f" },
+  { id: "personal", name: "Personal", color: "#2443d6" },
+];
+const acct = id => ACCOUNTS.find(a => a.id === id);
+const LAUNCH = {
+  vscode: { ctx: "Claude Code is starting in VS Code", title: "widgetdeck — Visual Studio Code" },
+  app:    { ctx: "Opening the Claude app", title: "Claude" },
+};
+
+function trayMenu(s) {
+  const a = acct(s.account || "work");
+  return `<div class="popup corner" role="menu" aria-label="Tray menu">
+    <div class="ctx" style="margin-top:0">Claude account: ${a.name}</div>
+    ${ACCOUNTS.map(x => `<button class="acct ${x.id === a.id ? "sel" : ""}" data-act="switchTo" data-id="${x.id}">
+      <span class="av" style="background:${x.color}">${x.name[0]}</span><span><b>${x.name}</b></span><span class="key">${x.id === a.id ? "✓" : ""}</span></button>`).join("")}
+    <div class="ctx" style="margin-top:0">✓ Bring recent conversations when switching</div>
+  </div>`;
+}
+function workWindow(s) {
+  const L = LAUNCH[s.launch || "vscode"], a = acct(s.account || "work");
+  const body = s.launch === "app"
+    ? `<div style="font-family:var(--f-body);font-size:13px;color:#ddd">Good afternoon.<br><span style="color:#888">Signed in as ${a.name}</span></div>`
+    : `<span style="color:#6a9955">// src/showcase.ts</span><br><span style="color:#c586c0">export const</span> apps = loadApps();<br><br><span style="color:#888">Claude Code</span> · account: <span style="color:#9cdcfe">${a.name}</span>`;
+  return `<div class="win"><div class="win-title"><span>●●●</span>${L.title}</div>
+    <div class="win-body">${body}</div></div>`;
+}
+function taskbar(s) {
+  const a = s.account ? acct(s.account) : null;
+  return `<div class="taskbar"><div class="apps"><span class="tb">⊞</span><span class="tb">VS</span><span class="tb">C</span></div>
+    <button class="tray-btn" data-act="tray" aria-label="Claude account tray icon"><span style="width:8px;height:8px;border-radius:50%;background:${a ? a.color : "#888"}"></span>${a ? a.name : "Claude account"}</button></div>`;
+}
+
+const switcherApp = {
+  id: "account-switcher",
+  name: "Claude Account Switcher",
+  icon: "img/switcher-icon.png",
+  tagline: "Pick which Claude account to use every time Claude Code or the Claude app opens, and switch any time.",
+  platforms: ["Windows x64", "Windows ARM64"],
+  status: "Working first version",
+  problem: "If you have more than one Claude account, like work and personal, it is easy to start on the wrong one. Switching usually means signing out and back in, and you lose your place when one account runs out of usage.",
+  features: [
+    { title: "Popup on launch", text: "When Claude Code starts in VS Code or you open the Claude app, a small popup asks which account to use." },
+    { title: "Tray icon", text: "Shows the account in use and switches to another with one click." },
+    { title: "Claude app as any account", text: "Open the Claude app as whichever account you want, even two side by side." },
+    { title: "Conversations come along", text: "Recent conversations are carried over when you switch, so you can move one to another account when the first runs out of usage." },
+    { title: "Never touches your sign-in", text: "No passwords or tokens are stored or copied. Each account gets its own folder and Claude signs in there itself." },
+  ],
+  how: [
+    "Install it once. It hooks into the Claude Code extension in VS Code and adds a Claude shortcut that asks first.",
+    "Start Claude Code or open the Claude app, and pick an account in the popup.",
+    "Switch any time from the tray icon. New conversations use the new account straight away.",
+    "To move the current VS Code conversation over, reload the window and carry on.",
+  ],
+  notes: [
+    "A conversation that is already open cannot change accounts in place. The switch applies to the next conversation, or to the current one after a VS Code reload.",
+    "Tick \"Don't ask again\" to stop the popup and always use the active account.",
+    "The app is not code-signed yet, so Windows may show a SmartScreen warning the first time.",
+  ],
+  screenshots: [
+    { src: "img/switcher-picker.png",    caption: "The popup that appears when Claude Code starts.", kind: "window" },
+    { src: "img/switcher-tray-menu.png", caption: "The tray menu: switch accounts, open the Claude app as any account, and settings.", kind: "window" },
+  ],
+  demo: {
+    frame: "desktop",
+    init: () => ({ launch: null, account: null, pick: "work", dontAsk: false, tray: false, toast: null }),
+    steps: [
+      {
+        title: "Start Claude",
+        caption: "Start Claude Code in VS Code or open the Claude app. Click one of the tiles to launch it.",
+        on: { launch: (s, api, el) => { api.set({ launch: el.dataset.l }); api.go(1); } },
+        render: s => `<div class="desk-area">
+            <div class="launchers">
+              <button class="launch" data-act="launch" data-l="vscode"><span class="ico" style="background:#2443d6">VS</span><b>Claude Code in VS Code</b><span>C:\\code\\widgetdeck</span></button>
+              <button class="launch" data-act="launch" data-l="app"><span class="ico" style="background:#d97757">C</span><b>Claude (choose account)</b><span>Start menu shortcut</span></button>
+            </div>
+            <p class="hint" style="margin-top:14px">The switcher waits in the tray.</p>
+          </div>${taskbar(s)}`,
+      },
+      {
+        title: "Pick the account",
+        caption: "The popup appears before Claude starts. Choose an account and continue. A new account asks you to sign in the first time it is used.",
+        on: {
+          pick: (s, api, el) => api.set({ pick: el.dataset.id }),
+          dontAsk: (s, api) => api.set({ dontAsk: !s.dontAsk }),
+          confirm: (s, api) => { api.set({ account: s.pick, toast: `Using ${acct(s.pick).name}` }); api.go(2); },
+        },
+        render: s => {
+          const L = LAUNCH[s.launch || "vscode"];
+          return `<div class="desk-area">
+            <div class="popup" role="dialog" aria-label="Choose Claude account">
+              <h4>Which account should ${s.launch === "app" ? "the Claude app" : "Claude Code"} use?</h4>
+              <div class="ctx">${L.ctx}</div>
+              ${ACCOUNTS.map(a => `<button class="acct ${s.pick === a.id ? "sel" : ""}" data-act="pick" data-id="${a.id}">
+                <span class="av" style="background:${a.color}">${a.name[0]}</span><span><b>${a.name}</b></span><span></span></button>`).join("")}
+              <label><input type="checkbox" id="dont-ask" data-act="dontAsk" ${s.dontAsk ? "checked" : ""}> Don't ask again (switch any time from the tray icon)</label>
+              <button class="go" data-act="confirm">Use this account</button>
+            </div></div>${taskbar(s)}`;
+        },
+      },
+      {
+        title: "Switch from the tray",
+        caption: "You are working. Click the tray icon and pick the other account. New conversations use it straight away, and recent ones come along.",
+        on: {
+          tray: (s, api) => api.set({ tray: !s.tray, toast: null }),
+          switchTo: (s, api, el) => api.set({ account: el.dataset.id, tray: false, toast: `Switched to ${acct(el.dataset.id).name}. Reload the window to continue this conversation there.` }),
+        },
+        render: s => `<div class="desk-area">${workWindow(s)}
+            ${s.tray ? trayMenu(s) : ""}
+            ${s.toast ? `<div class="toast">${s.toast}</div>` : ""}
+          </div>${taskbar(s)}`,
+      },
+      {
+        title: "Two accounts side by side",
+        caption: "From the tray, open the Claude app as either account. Each account has its own folder, so both can be open at once.",
+        render: s => `<div class="desk-area">
+            ${ACCOUNTS.map((a, i) => `<div class="win" style="inset:${12 + i * 34}px ${12 + (1 - i) * 90}px ${12 + (1 - i) * 34}px ${12 + i * 90}px">
+              <div class="win-title"><span style="width:8px;height:8px;border-radius:50%;background:${a.color};display:inline-block"></span>Claude · ${a.name}</div>
+              <div class="win-body" style="font-family:var(--f-body)">Signed in as ${a.name}<br><span style="color:#888">How can I help you today?</span></div></div>`).join("")}
+          </div>${taskbar(s)}`,
+      },
+    ],
+  },
+};
+
+/* ---------- App 3: Cloud Transfer ---------- */
+const CT_SOURCE = [
+  { id: "music",  name: "Music",          kind: "folder", size: "386 MB" },
+  { id: "photos", name: "Photos",         kind: "folder", size: "142 MB" },
+  { id: "work",   name: "Work",           kind: "folder", size: "244 MB" },
+  { id: "notes",  name: "Notes",          kind: "gdoc",   size: "Google file" },
+  { id: "resume", name: "Resume.docx",    kind: "file",   size: "205 KB" },
+  { id: "taxes",  name: "Taxes 2025.pdf", kind: "file",   size: "2.4 MB" },
+];
+const CT_DEST = ["Top level", "Documents", "Pictures", "From Google Drive"];
+const CT_TOTAL_MB = 775;
+let ctTimer = null;
+
+function ctShell(inner) {
+  return `<div class="desk-area"><div class="ct-win">
+    <div class="ct-side"><div class="ct-brand"><img src="img/transfer-icon.png" alt="">Cloud Transfer</div>
+      <span>Transfers</span><span class="on">New transfer</span><span>Accounts</span></div>
+    <div class="ct-main">${inner}</div></div></div>`;
+}
+function ctSteps(n) {
+  return `<div class="ct-steps">${["From", "To", "Review"].map((t, i) => `<span class="${i < n ? "done" : i === n ? "now" : ""}"><i>${i < n ? "✓" : i + 1}</i>${t}</span>`).join("")}</div>`;
+}
+function ctTick(api, get) {
+  clearInterval(ctTimer);
+  ctTimer = setInterval(() => {
+    const s = get();
+    if (s.paused) return;
+    if (s.mb >= CT_TOTAL_MB) { clearInterval(ctTimer); return; }
+    const notes = [...s.notes];
+    let wait = s.wait;
+    if (s.mb >= 260 && !s.slowed) { notes.unshift("OneDrive asked us to slow down, so we paused for 3s and now move 1 file at a time. Nothing for you to do."); api.set({ slowed: true, wait: 6, notes }); return; }
+    if (wait > 0) { api.set({ wait: wait - 1 }); return; }
+    const mb = Math.min(CT_TOTAL_MB, s.mb + (s.slowed ? 22 : 34));
+    if (mb >= CT_TOTAL_MB) notes.unshift("Done. 16 files copied and checked, Notes saved as Notes.docx, 1 file renamed, 1 Google Form skipped because it can't be copied.");
+    api.set({ mb, notes });
+  }, 260);
+}
+
+const transferApp = {
+  id: "cloud-transfer",
+  name: "Cloud Transfer",
+  icon: "img/transfer-icon.png",
+  tagline: "Move your files between Google Drive, OneDrive and iCloud Drive without downloading them first.",
+  platforms: ["Windows", "iPhone", "Android"],
+  status: "Working prototype",
+  problem: "Switching clouds usually means downloading everything to your computer and uploading it again. That needs free disk space and a computer left on for hours, and along the way you hit limits nobody explains: daily upload caps, \"rate limit exceeded\" errors, Google Docs that won't download, and transfers that fail halfway and start over.",
+  features: [
+    { title: "Cloud to cloud", text: "Copy files and whole folders between Google Drive, OneDrive and iCloud Drive. Nothing is downloaded to your device; on Windows files only pass through memory." },
+    { title: "Limits handled for you", text: "When Google or Microsoft ask to slow down, or Google's 750 GB-a-day upload cap is reached, the app waits and carries on by itself, with a plain-English note." },
+    { title: "Picks up where it left off", text: "Big files move in pieces, so an interrupted transfer resumes from the last piece, even after a restart." },
+    { title: "Google files become Office files", text: "Google Docs, Sheets and Slides arrive as Word, Excel and PowerPoint files." },
+    { title: "Names fixed, files checked", text: "Names the other cloud doesn't allow are fixed and shown to you, and each file is checked after copying." },
+  ],
+  how: [
+    "Connect your accounts: sign in to Google Drive and OneDrive, and use iCloud Drive through iCloud for Windows.",
+    "Pick the files and folders to copy.",
+    "Pick the destination folder, review the options, and start.",
+    "Watch it go, or close the window. The transfer keeps running from the tray.",
+  ],
+  notes: [
+    "A demo mode with sample accounts lets anyone try it without signing in.",
+    "iCloud Drive works on Windows through Apple's iCloud for Windows. It is coming to iPhone and isn't possible on Android, because Apple offers no way in.",
+    "Some work or school Microsoft accounts need an admin to approve the app.",
+    "Until Google approves the app, Google sign-in shows an \"unverified app\" warning.",
+  ],
+  screenshots: [
+    { src: "img/transfer-progress.png",   caption: "A transfer in progress. OneDrive asked to slow down, and the app handled it.", kind: "window" },
+    { src: "img/transfer-pick-files.png", caption: "Step 1 of the wizard: pick files and folders from Google Drive.", kind: "window" },
+    { src: "img/transfer-review.png",     caption: "Step 3: review options like converting Google Docs and checking each file.", kind: "window" },
+    { src: "img/transfer-home.png",       caption: "All transfers in one place.", kind: "window" },
+    { src: "img/transfer-accounts.png",   caption: "Connected accounts: Google Drive, OneDrive and iCloud Drive.", kind: "window" },
+    { src: "img/transfer-phone.png",      caption: "The same app on a phone, where the transfer runs on the server.", kind: "phone" },
+  ],
+  demo: {
+    frame: "desktop",
+    init: () => { clearInterval(ctTimer); return { picked: { music: true, photos: true, notes: true }, dest: "From Google Drive", convert: true, verify: true, mb: 0, slowed: false, wait: 0, paused: false, notes: ["Found 17 files (775 MB), 1 can't be copied."] }; },
+    steps: [
+      {
+        title: "Pick what to copy",
+        caption: "Choose the cloud to copy from, then tick files and folders. Try ticking a few.",
+        on: { pick: (s, api, el) => api.set({ picked: { ...s.picked, [el.dataset.id]: !s.picked[el.dataset.id] } }) },
+        render: s => ctShell(`<div class="ct-h">New transfer</div>${ctSteps(0)}
+          <div class="ct-from"><span class="sel">G&nbsp; Google Drive</span><span>OneDrive</span><span>iCloud Drive</span></div>
+          <div class="ct-list">${CT_SOURCE.map(f => `<button class="ct-row" data-act="pick" data-id="${f.id}"><span class="ct-box ${s.picked[f.id] ? "on" : ""}">${s.picked[f.id] ? "✓" : ""}</span><span class="ct-ico ${f.kind}"></span><span class="ct-nm">${f.name}</span><span class="ct-sz">${f.size}</span></button>`).join("")}</div>
+          <div class="ct-foot">${Object.values(s.picked).filter(Boolean).length} selected</div>`),
+      },
+      {
+        title: "Pick where it goes",
+        caption: "Choose the destination cloud and folder. Here it is a OneDrive folder.",
+        on: { dest: (s, api, el) => api.set({ dest: el.dataset.d }) },
+        render: s => ctShell(`<div class="ct-h">New transfer</div>${ctSteps(1)}
+          <div class="ct-from"><span>Google Drive</span><span class="sel">OneDrive</span><span>iCloud Drive</span></div>
+          <div class="ct-list">${CT_DEST.map(d => `<button class="ct-row" data-act="dest" data-d="${d}"><span class="ct-radio ${s.dest === d ? "on" : ""}"></span><span class="ct-ico folder"></span><span class="ct-nm">${d}</span><span></span></button>`).join("")}</div>`),
+      },
+      {
+        title: "Review and start",
+        caption: "Decide whether to turn Google Docs into Office files and check each file after copying, then start.",
+        on: {
+          convert: (s, api) => api.set({ convert: !s.convert }),
+          verify: (s, api) => api.set({ verify: !s.verify }),
+          start: (s, api) => api.go(3),
+        },
+        render: s => ctShell(`<div class="ct-h">New transfer</div>${ctSteps(2)}
+          <div class="ct-card"><b>${CT_SOURCE.filter(f => s.picked[f.id]).map(f => f.name).join(", ") || "Nothing selected"}</b><span>Google Drive → OneDrive / ${s.dest}</span></div>
+          <button class="ct-opt" data-act="convert"><span class="ct-box ${s.convert ? "on" : ""}">${s.convert ? "✓" : ""}</span>Turn Google Docs, Sheets and Slides into Office files</button>
+          <button class="ct-opt" data-act="verify"><span class="ct-box ${s.verify ? "on" : ""}">${s.verify ? "✓" : ""}</span>Check each file after copying</button>
+          <div class="ct-safe">Files stream from one cloud to the other. Nothing is saved to your disk.</div>
+          <div class="ct-foot"><button class="ct-go" data-act="start">Start transfer</button></div>`),
+      },
+      {
+        title: "Watch it go",
+        caption: "Progress fills up. Partway through, OneDrive asks the app to slow down, and it waits and carries on by itself. Nothing for you to do.",
+        on: {
+          pause: (s, api) => api.set({ paused: !s.paused }),
+          again: (s, api) => { api.set({ mb: 0, slowed: false, wait: 0, paused: false, notes: ["Found 17 files (775 MB), 1 can't be copied."] }); },
+        },
+        render: (s, api) => {
+          if (!ctTimer || s.mb === 0) setTimeout(() => ctTick(api, api.get), 0);
+          const pct = Math.round(s.mb / CT_TOTAL_MB * 100), done = s.mb >= CT_TOTAL_MB;
+          const status = done ? "Done" : s.paused ? "Paused" : s.wait > 0 ? "Slowing down" : "Copying";
+          return ctShell(`<div class="ct-h">${Object.values(s.picked).filter(Boolean).length || 1} items <small>to OneDrive</small></div>
+            <div class="ct-card"><div class="ct-pct"><b>${pct}%</b><span>${s.mb} MB of ${CT_TOTAL_MB} MB</span><em class="${done ? "ok" : s.wait > 0 ? "wait" : ""}">${status}</em></div>
+            <div class="ct-bar"><i style="width:${pct}%"></i></div>
+            <div class="ct-foot" style="justify-content:flex-start">${done ? `<button class="ct-go" data-act="again">Run it again</button>` : `<button class="ct-go ghost" data-act="pause">${s.paused ? "Resume" : "Pause"}</button>`}</div></div>
+            <div class="ct-notes">${s.notes.map((n, i) => `<div class="${i === 0 && s.slowed && !done && n.startsWith("OneDrive") ? "hl" : ""}">${n}</div>`).join("")}</div>`);
+        },
+      },
+    ],
+  },
+};
+
+const APPS = [groceryApp, switcherApp, transferApp];
+
+/* ==========================================================================
+   Rendering — generic, no app-specific code below.
+   ========================================================================== */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function renderDeck() {
+  document.getElementById("topnav").innerHTML = APPS.map(a => `<a href="#${a.id}">${esc(a.name)}</a>`).join("");
+  document.getElementById("deck").innerHTML = APPS.map((a, i) => `
+    <a class="deck-card" href="#${a.id}">
+      <div class="row"><span class="label">App ${i + 1}</span><span class="tbd">Working name</span></div>
+      <div class="title-row">${a.icon ? `<img class="app-icon" src="${a.icon}" alt="">` : ""}<h3>${esc(a.name)}</h3></div>
+      <p>${esc(a.tagline)}</p>
+      <div class="chips">${a.platforms.map(p => `<span class="chip">${esc(p)}</span>`).join("")}<span class="chip status">${esc(a.status)}</span></div>
+    </a>`).join("") + `<div class="deck-card add"><span class="label">Next</span><p>More app ideas will land here.</p></div>`;
+  document.getElementById("count").textContent = `${APPS.length} apps in progress`;
+}
+
+function renderApps() {
+  document.getElementById("apps").innerHTML = APPS.map(a => `
+    <section class="app" id="${a.id}" aria-labelledby="${a.id}-h">
+      <div class="app-grid">
+        <div class="app-info">
+          <div class="app-head">
+            <div class="chips"><span class="tbd">Working name</span>${a.platforms.map(p => `<span class="chip">${esc(p)}</span>`).join("")}<span class="chip status">${esc(a.status)}</span></div>
+            <div class="title-row">${a.icon ? `<img class="app-icon" src="${a.icon}" alt="">` : ""}<h2 id="${a.id}-h">${esc(a.name)}</h2></div>
+            <p class="tagline">${esc(a.tagline)}</p>
+          </div>
+          <div class="block"><span class="label">The problem</span><p>${esc(a.problem)}</p></div>
+          <div class="block"><span class="label">What it does</span>
+            <ul class="features">${a.features.map(f => `<li><span><b>${esc(f.title)}.</b> ${esc(f.text)}</span></li>`).join("")}</ul></div>
+          <div class="block"><span class="label">How you use it</span>
+            <ol class="steps-list">${a.how.map(h => `<li><span>${esc(h)}</span></li>`).join("")}</ol></div>
+          ${a.notes && a.notes.length ? `<div class="open-q"><span class="label">Good to know</span>
+            <ul>${a.notes.map(q => `<li>${esc(q)}</li>`).join("")}</ul></div>` : ""}
+        </div>
+        <div class="demo" data-demo="${a.id}"></div>
+      </div>
+    </section>`).join("");
+  APPS.forEach(mountDemo);
+}
+
+function mountDemo(app) {
+  const root = document.querySelector(`[data-demo="${app.id}"]`);
+  const d = app.demo;
+  const shots = app.screenshots || [];
+  let state = d.init(), step = 0, view = shots.length ? "shots" : "walk", shot = 0;
+  const api = {
+    set(patch) { state = { ...state, ...patch }; draw(); },
+    go(i) { step = Math.max(0, Math.min(d.steps.length - 1, i)); draw(); },
+    get() { return state; },
+  };
+  function frame(inner) {
+    if (d.frame === "phone") return `<div class="phone"><div class="phone-screen"><div class="phone-notch"></div><div class="phone-status"><span>9:41</span><span>●●● ▮</span></div><div class="phone-body">${inner}</div></div></div>`;
+    return `<div class="desk"><div class="desk-screen">${inner}</div></div>`;
+  }
+  function tabs() {
+    if (!shots.length) return "";
+    return `<div class="tabs" role="tablist">
+      <button role="tab" aria-selected="${view === "shots"}" data-view="shots">Screenshots</button>
+      <button role="tab" aria-selected="${view === "walk"}" data-view="walk">Walkthrough</button></div>`;
+  }
+  function draw() {
+    if (view === "shots") {
+      const sh = shots[shot];
+      root.innerHTML = `
+        <div class="demo-bar">${tabs()}<span class="label">${shot + 1} of ${shots.length}</span></div>
+        <div class="shot-main"><img class="${sh.kind}-shot" src="${sh.src}" alt="${esc(sh.caption)}"></div>
+        <div class="caption"><h3>From the current build</h3><p>${esc(sh.caption)}</p></div>
+        ${shots.length > 1 ? `<div class="thumbs">${shots.map((x, i) => `<button data-shot="${i}" aria-label="${esc(x.caption)}" ${i === shot ? 'aria-current="true"' : ""}><img src="${x.src}" alt=""></button>`).join("")}</div>` : ""}`;
+      return;
+    }
+    const s = d.steps[step];
+    root.innerHTML = `
+      <div class="demo-bar">${tabs()}<span class="label">Step ${step + 1} of ${d.steps.length}</span></div>
+      <div class="dots">${d.steps.map((x, i) => `<button aria-label="Step ${i + 1}: ${esc(x.title)}" ${i === step ? 'aria-current="step"' : ""} data-nav="${i}"></button>`).join("")}</div>
+      <div class="stage">${frame(s.render(state, api))}</div>
+      <div class="caption"><h3>${esc(s.title)}</h3><p>${esc(s.caption)}</p></div>
+      <div class="demo-nav">
+        <button class="btn" data-nav="${step - 1}" ${step === 0 ? "disabled" : ""}>Back</button>
+        ${step === d.steps.length - 1
+          ? `<button class="btn" data-restart>Start over</button>`
+          : `<button class="btn primary" data-nav="${step + 1}">Next</button>`}
+      </div>`;
+  }
+  root.addEventListener("click", e => {
+    const v = e.target.closest("[data-view]");
+    if (v) { view = v.dataset.view; return draw(); }
+    const t = e.target.closest("[data-shot]");
+    if (t) { shot = +t.dataset.shot; return draw(); }
+    const nav = e.target.closest("[data-nav]");
+    if (nav) return api.go(+nav.dataset.nav);
+    if (e.target.closest("[data-restart]")) { state = d.init(); return api.go(0); }
+    const act = e.target.closest("[data-act]");
+    if (act) {
+      const h = d.steps[step].on && d.steps[step].on[act.dataset.act];
+      if (h) { e.preventDefault(); h(state, api, act); }
+    }
+  });
+  draw();
+}
+
+renderDeck();
+renderApps();
+</script>
+</body>
+</html>
