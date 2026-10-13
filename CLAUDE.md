@@ -20,6 +20,8 @@ The apps themselves live in private repos: `grocery-check`, `claude-account-swit
 
 Serve the folder (`python -m http.server 8080`) and check light, dark and a phone-width window. Root-relative assets (favicon, 404 page) don't work from `file://`.
 
+Check Safari too, not only Chromium: an iPhone once showed screenshots collapsed to a narrow column because a figure was sized from its content (`min-content`) while its image was capped at 100%. Give sized media explicit widths or aspect ratios. Playwright's WebKit on Windows renders the variable Bricolage font far too condensed; real Safari doesn't, so don't "fix" headings based on that build.
+
 ## Status (2026-10-13)
 
 Live at https://widgetdeck.com with HTTPS enforced (GoDaddy DNS points at GitHub Pages; `www` redirects to the apex over http, and its own https certificate is still pending at GitHub). Ask AJ before adding analytics, forms, third-party scripts or anything that collects data.
