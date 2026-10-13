@@ -3,331 +3,574 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Widgetdeck</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<title>Widgetdeck: small apps that fix everyday annoyances</title>
+<meta name="description" content="Every app AJ is building, with the problem it solves, real screenshots and a demo you can click through: Grocery Check, Claude Account Switcher and Cloud Transfer.">
+<link rel="canonical" href="https://widgetdeck.com/">
+
+<!-- Brand assets are root-absolute so they also resolve from 404.html on any path. Page assets (img/, fonts/) are relative. -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#F6F6F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E0E10" media="(prefers-color-scheme: dark)">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Widgetdeck">
+<meta property="og:url" content="https://widgetdeck.com/">
+<meta property="og:title" content="Widgetdeck: small apps that fix everyday annoyances">
+<meta property="og:description" content="Every app AJ is building, with the problem it solves, real screenshots and a demo you can click through.">
+<meta property="og:image" content="https://widgetdeck.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Widgetdeck: screenshots of Grocery Check, Cloud Transfer and the Claude Account Switcher fanned out like a deck of cards.">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preload" href="fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+
+<!-- No-flash theme: a saved choice wins, otherwise the OS setting applies through CSS. -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('widgetdeck-theme');
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+
 <style>
-/* Layout: a "deck" of app cards up top, then one section per app with its story on the left and a live mock demo on the right. */
+/*
+ * Widgetdeck. Design read: a maker's app showcase for curious early users, calm and hands-on.
+ * Native CSS on one static page (GitHub Pages, no build). Dials: variance 7, motion 5, density 4.
+ * One accent (deep rose) for the page chrome. The app mocks inside the demos use each app's own palette.
+ * Shapes: buttons, tabs and tags are pills; cards, panels and frames are 16px; small inner items 10px.
+ */
+@font-face { font-family: "Geist"; src: url(fonts/Geist-Variable.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url(fonts/GeistMono-Variable.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+
 :root {
-  --bg: #eef1f5;
-  --surface: #ffffff;
-  --surface-2: #e3e8ef;
-  --ink: #111722;
-  --muted: #5a6577;
-  --line: #d3d9e2;
-  --accent: #2443d6;
-  --accent-ink: #ffffff;
-  --accent-soft: #dfe5ff;
-  --good: #11865f;
-  --good-soft: #d9f2e8;
-  --warn: #b5560b;
-  --warn-soft: #fbe7d6;
-  --bad: #c0283a;
-  --bad-soft: #fbdfe3;
-  --device: #1a2130;
-  --screen: #f8fafc;
-  --shadow: 0 1px 2px rgba(17,23,34,.06), 0 12px 32px -12px rgba(17,23,34,.18);
-  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --f-body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
-  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --bg: #F6F6F7;
+  --surface: #FCFCFD;
+  --surface-2: #EEEEF1;
+  --surface-3: #E3E3E8;
+  --ink: #18181B;
+  --muted: #52525B;
+  --line: #E0E0E5;
+  --accent: #BE185D;
+  --accent-hover: #A3134F;
+  --accent-soft: #FBE6EF;
+  --on-accent: #FFF7FA;
+  --focus: #BE185D;
+  --device: #1C1C20;
+  --shadow: 0 1px 2px rgb(24 24 27 / .06), 0 24px 48px -24px rgb(24 24 27 / .28);
+  --shadow-s: 0 1px 2px rgb(24 24 27 / .08), 0 8px 20px -12px rgb(24 24 27 / .25);
+
+  /* Grocery Check palette (matches the app) */
+  --g-bg: #F5F6F3; --g-surface: #FCFDFB; --g-alt: #ECEFEA; --g-text: #18201C; --g-muted: #5B6560; --g-border: #DCE1DA;
+  --g-accent: #1F7A4D; --g-accent-soft: #E2F1E8; --g-on-accent: #FBFDFC;
+  --g-missed: #B42318; --g-missed-soft: #FCEBE8; --g-extra: #9A5800; --g-extra-soft: #FCF0DA;
+  /* Cloud Transfer palette (matches the app) */
+  --ct-bg: #F4F6FB; --ct-surface: #FCFDFF; --ct-alt: #EDF0F6; --ct-text: #141A2E; --ct-muted: #5A6379; --ct-border: #E0E4EE;
+  --ct-divider: #ECEFF5; --ct-track: #E3E7F0; --ct-control: #C2C8D7; --ct-selected: #EEF2FF;
+  --ct-primary: #2F4BFF; --ct-primary-soft: #E8ECFF; --ct-on-primary: #FCFDFF;
+  --ct-success: #16804A; --ct-success-soft: #E3F5EA; --ct-wait: #8F5400; --ct-wait-soft: #FFF3DC;
+  --ct-sidebar: #0F1530; --ct-sidebar-text: #AEB6D0; --ct-folder: #E9A21F; --ct-gdoc: #1A73E8; --ct-file: #8C94AA;
+
+  --r-s: 10px;
+  --r-m: 16px;
+  --r-pill: 999px;
+  --f-sans: "Geist", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "Geist Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0e131b; --surface: #161d28; --surface-2: #1f2836; --ink: #e8edf5; --muted: #98a3b5; --line: #2a3445;
-    --accent: #7d93ff; --accent-ink: #0b1020; --accent-soft: #232d55;
-    --good: #4cd29f; --good-soft: #143528; --warn: #f2a25c; --warn-soft: #3a2614; --bad: #ff7d8c; --bad-soft: #3d1a20;
-    --device: #05080d; --screen: #121924; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+    --bg: #0E0E10; --surface: #17171A; --surface-2: #1F1F23; --surface-3: #2A2A2F; --ink: #EDEDF0; --muted: #A1A1AA; --line: #2A2A30;
+    --accent: #EE7AB0; --accent-hover: #F59BC4; --accent-soft: #3A1626; --on-accent: #1A0A11; --focus: #EE7AB0; --device: #2A2A30;
+    --shadow: 0 1px 2px rgb(0 0 0 / .5), 0 24px 48px -24px rgb(0 0 0 / .7); --shadow-s: 0 1px 2px rgb(0 0 0 / .5), 0 8px 20px -12px rgb(0 0 0 / .6);
+    --g-bg: #101412; --g-surface: #171C19; --g-alt: #202622; --g-text: #E7ECE9; --g-muted: #9CA69F; --g-border: #2A312D;
+    --g-accent: #5CC995; --g-accent-soft: #183324; --g-on-accent: #0D1410; --g-missed: #F28B7F; --g-missed-soft: #3A1C19; --g-extra: #EDB45C; --g-extra-soft: #372A12;
+    --ct-bg: #0D1120; --ct-surface: #151A2B; --ct-alt: #1E2437; --ct-text: #E6E9F2; --ct-muted: #A0A8BF; --ct-border: #272E45;
+    --ct-divider: #20263A; --ct-track: #272E45; --ct-control: #4A5270; --ct-selected: #1E2747;
+    --ct-primary: #7F8FFF; --ct-primary-soft: #1F2650; --ct-on-primary: #0D1120; --ct-success: #4CC98A; --ct-success-soft: #13301F;
+    --ct-wait: #F0B44C; --ct-wait-soft: #33260F; --ct-sidebar: #090C17; --ct-sidebar-text: #A3ABC4; --ct-folder: #F2B233; --ct-gdoc: #7AB0F7; --ct-file: #737B95;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0e131b; --surface: #161d28; --surface-2: #1f2836; --ink: #e8edf5; --muted: #98a3b5; --line: #2a3445;
-  --accent: #7d93ff; --accent-ink: #0b1020; --accent-soft: #232d55;
-  --good: #4cd29f; --good-soft: #143528; --warn: #f2a25c; --warn-soft: #3a2614; --bad: #ff7d8c; --bad-soft: #3d1a20;
-  --device: #05080d; --screen: #121924; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px -12px rgba(0,0,0,.6);
+  --bg: #0E0E10; --surface: #17171A; --surface-2: #1F1F23; --surface-3: #2A2A2F; --ink: #EDEDF0; --muted: #A1A1AA; --line: #2A2A30;
+  --accent: #EE7AB0; --accent-hover: #F59BC4; --accent-soft: #3A1626; --on-accent: #1A0A11; --focus: #EE7AB0; --device: #2A2A30;
+  --shadow: 0 1px 2px rgb(0 0 0 / .5), 0 24px 48px -24px rgb(0 0 0 / .7); --shadow-s: 0 1px 2px rgb(0 0 0 / .5), 0 8px 20px -12px rgb(0 0 0 / .6);
+  --g-bg: #101412; --g-surface: #171C19; --g-alt: #202622; --g-text: #E7ECE9; --g-muted: #9CA69F; --g-border: #2A312D;
+  --g-accent: #5CC995; --g-accent-soft: #183324; --g-on-accent: #0D1410; --g-missed: #F28B7F; --g-missed-soft: #3A1C19; --g-extra: #EDB45C; --g-extra-soft: #372A12;
+  --ct-bg: #0D1120; --ct-surface: #151A2B; --ct-alt: #1E2437; --ct-text: #E6E9F2; --ct-muted: #A0A8BF; --ct-border: #272E45;
+  --ct-divider: #20263A; --ct-track: #272E45; --ct-control: #4A5270; --ct-selected: #1E2747;
+  --ct-primary: #7F8FFF; --ct-primary-soft: #1F2650; --ct-on-primary: #0D1120; --ct-success: #4CC98A; --ct-success-soft: #13301F;
+  --ct-wait: #F0B44C; --ct-wait-soft: #33260F; --ct-sidebar: #090C17; --ct-sidebar-text: #A3ABC4; --ct-folder: #F2B233; --ct-gdoc: #7AB0F7; --ct-file: #737B95;
   color-scheme: dark;
 }
 
-* { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--f-body); }
-.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
-a { color: var(--accent); }
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--f-sans); -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-h1, h2, h3 { font-family: var(--f-display); line-height: 1.1; margin: 0; text-wrap: balance; }
-.label { font: 500 12px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { margin: 0; line-height: 1.08; text-wrap: balance; font-weight: 650; letter-spacing: -.025em; }
+p { margin: 0; }
+.wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding-inline: 24px; }
+.icon { width: 1em; height: 1em; flex: none; fill: currentColor; }
+.skip { position: absolute; left: 16px; top: -48px; z-index: 30; background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: var(--r-pill); text-decoration: none; }
+.skip:focus { top: 12px; }
+.mono { font-family: var(--f-mono); font-size: 13px; letter-spacing: 0; }
 
-/* Header */
-.top { padding-block: 22px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.brand { display: flex; align-items: center; gap: 10px; font: 800 20px/1 var(--f-display); letter-spacing: -.01em; color: var(--ink); text-decoration: none; }
-.brand-mark { width: 28px; height: 28px; position: relative; }
-.brand-mark i { position: absolute; width: 18px; height: 22px; border-radius: 4px; border: 2px solid var(--ink); background: var(--surface); }
-.brand-mark i:nth-child(1) { left: 0; top: 4px; transform: rotate(-10deg); }
-.brand-mark i:nth-child(2) { left: 9px; top: 2px; background: var(--accent); border-color: var(--accent); transform: rotate(8deg); }
-.top nav { display: flex; gap: 18px; flex-wrap: wrap; }
-.top nav a { color: var(--muted); text-decoration: none; font-weight: 500; font-size: 15px; }
-.top nav a:hover { color: var(--ink); }
+/* Buttons: pill, one primary style, one quiet style */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border-radius: var(--r-pill); padding: 11px 20px; font-weight: 550; font-size: 15px; line-height: 1.2; text-decoration: none; border: 1px solid transparent; transition: transform .2s var(--ease), background-color .2s var(--ease), border-color .2s var(--ease); }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-quiet { background: var(--surface); border-color: var(--line); color: var(--ink); }
+.btn-quiet:hover { border-color: var(--muted); }
+.btn:disabled { opacity: .45; cursor: default; transform: none; }
+.btn .icon { width: 18px; height: 18px; }
 
-.intro { padding-block: 40px 28px; display: grid; gap: 14px; max-width: 760px; }
-.intro h1 { font-size: clamp(34px, 6vw, 58px); font-weight: 800; letter-spacing: -.025em; }
-.intro h1 em { font-style: normal; color: var(--accent); }
-.intro p { margin: 0; color: var(--muted); font-size: 18px; max-width: 60ch; }
-
-/* Deck of app cards */
-.deck { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; padding-block: 8px 56px; }
-.deck-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 12px; text-decoration: none; color: var(--ink); transition: transform .15s ease, border-color .15s ease; }
-.deck-card:hover { transform: translateY(-2px); border-color: var(--accent); }
-.deck-card .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.deck-card h3 { font-size: 22px; font-weight: 700; }
-.deck-card p { margin: 0; color: var(--muted); font-size: 15px; }
-.deck-card.add { border-style: dashed; background: transparent; align-content: center; color: var(--muted); }
-.deck-card.add:hover { transform: none; border-color: var(--line); }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { font: 500 12px/1 var(--f-mono); padding: 6px 8px; border-radius: 999px; background: var(--surface-2); color: var(--ink); white-space: nowrap; }
-.chip.status { background: var(--warn-soft); color: var(--warn); }
-.tbd { font: 500 11px/1 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; padding: 5px 7px; border-radius: 6px; border: 1px dashed var(--muted); color: var(--muted); white-space: nowrap; }
-
-/* App sections */
-.app { padding-block: 56px; border-top: 1px solid var(--line); scroll-margin-top: 12px; }
-.app-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 48px; align-items: start; }
-.app-info { display: grid; gap: 22px; min-width: 0; }
-.app-head { display: grid; gap: 10px; }
-.app-head h2 { font-size: clamp(30px, 4.4vw, 44px); font-weight: 800; letter-spacing: -.02em; }
-.app-head .tagline { margin: 0; font-size: 19px; color: var(--muted); max-width: 52ch; }
-.block { display: grid; gap: 8px; }
-.block p { margin: 0; max-width: 62ch; }
-.features { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.features li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; }
-.features li::before { content: ""; width: 10px; height: 10px; margin-top: 8px; border-radius: 3px; background: var(--accent); }
-.features b { font-weight: 600; }
-.steps-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; counter-reset: s; }
-.steps-list li { counter-increment: s; display: grid; grid-template-columns: 28px 1fr; gap: 10px; }
-.steps-list li::before { content: counter(s); font: 500 13px/26px var(--f-mono); text-align: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--line); color: var(--muted); }
-.open-q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
-.open-q ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
-
-/* Demo shell */
-.demo { position: sticky; top: 16px; display: grid; gap: 14px; min-width: 0; }
-.demo-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.dots { display: flex; gap: 6px; justify-content: center; }
-.dots button { width: 30px; height: 6px; border-radius: 3px; border: 0; padding: 0; background: var(--line); }
-.dots button[aria-current="step"] { background: var(--accent); }
-.stage { display: flex; justify-content: center; }
-.caption { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 4px; min-height: 92px; }
-.caption h3 { font-size: 18px; font-weight: 700; }
-.caption p { margin: 0; color: var(--muted); font-size: 15px; }
-.demo-nav { display: flex; justify-content: space-between; gap: 10px; }
-.btn { border: 1px solid var(--line); background: var(--surface); padding: 9px 16px; border-radius: 10px; font-weight: 600; font-size: 15px; }
-.btn:disabled { opacity: .4; cursor: default; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-
-/* Phone frame */
-.phone { width: 300px; max-width: 100%; height: 600px; background: var(--device); border-radius: 42px; padding: 12px; box-shadow: var(--shadow); }
-.phone-screen { height: 100%; background: var(--screen); border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
-.phone-status { display: flex; justify-content: space-between; padding: 12px 22px 4px; font: 600 12px/1 var(--f-body); }
-.phone-notch { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 84px; height: 22px; background: var(--device); border-radius: 12px; }
-.phone-body { flex: 1; overflow-y: auto; padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; }
-.scr-title { font: 700 22px/1.15 var(--f-display); }
-.scr-sub { color: var(--muted); font-size: 13px; margin-top: -6px; }
-.list { display: grid; gap: 6px; }
-.item { display: grid; grid-template-columns: 22px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-align: left; width: 100%; }
-.item .box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; font-size: 12px; color: var(--accent-ink); }
-.item.done .box { background: var(--good); border-color: var(--good); }
-.item.done .nm { text-decoration: line-through; color: var(--muted); }
-.price { font: 500 13px/1 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--muted); }
-.total-row { display: flex; justify-content: space-between; font-weight: 600; padding: 4px 4px 0; }
-.choice { display: grid; gap: 4px; padding: 14px; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; width: 100%; }
-.choice b { font-size: 15px; }
-.choice span { color: var(--muted); font-size: 13px; }
-.choice:hover { border-color: var(--accent); }
-.viewfinder { position: relative; border-radius: 16px; background: var(--surface-2); padding: 14px; overflow: hidden; }
-.receipt { background: #fffef9; color: #222; font: 400 11.5px/1.55 var(--f-mono); padding: 12px 12px 14px; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
-.receipt .r { display: flex; justify-content: space-between; gap: 8px; }
-.receipt .r.hit { color: #11865f; }
-.receipt .r.extra { color: #b5560b; }
-.receipt .head { text-align: center; margin-bottom: 6px; }
-.receipt .bar { height: 26px; margin-top: 8px; background: repeating-linear-gradient(90deg, #222 0 2px, transparent 2px 4px, #222 4px 5px, transparent 5px 8px); }
-.scanline { position: absolute; left: 8px; right: 8px; height: 2px; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: scan 1.2s ease-in-out infinite alternate; top: 12px; }
-@keyframes scan { to { top: calc(100% - 14px); } }
-.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--f-mono); padding: 6px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
-.sum-card { background: var(--warn-soft); color: var(--warn); border-radius: 14px; padding: 14px; display: grid; gap: 2px; }
-.sum-card .big { font: 800 30px/1.1 var(--f-display); font-variant-numeric: tabular-nums; }
-.sum-card span { font-size: 13px; }
-.grp { display: grid; gap: 6px; }
-.grp h4 { margin: 4px 0 0; font: 600 12px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
-.grp.missed h4 { color: var(--bad); }
-.grp.extra h4 { color: var(--warn); }
-.grp.diff h4 { color: var(--muted); }
-.line { display: flex; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); }
-.grp.missed .line { border-left: 3px solid var(--bad); }
-.grp.extra .line { border-left: 3px solid var(--warn); }
-
-/* Desktop frame */
-.desk { width: 100%; max-width: 560px; height: 420px; background: var(--device); border-radius: 14px; padding: 10px; box-shadow: var(--shadow); }
-.desk-screen { height: 100%; border-radius: 6px; overflow: hidden; position: relative; display: flex; flex-direction: column; background: linear-gradient(160deg, #2b4a8a, #1b2a4d 60%, #13203b); color: #e8edf5; font-size: 13px; }
-.desk-area { flex: 1; position: relative; padding: 14px; overflow: hidden; }
-.taskbar { height: 36px; background: rgba(10,14,22,.85); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; gap: 8px; font: 500 11px/1 var(--f-body); color: #c9d1de; }
-.taskbar .apps { display: flex; gap: 6px; }
-.taskbar .tb { width: 24px; height: 24px; border-radius: 5px; background: rgba(255,255,255,.12); display: grid; place-items: center; font: 700 10px/1 var(--f-mono); }
-.tray-btn { display: flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 6px; border: 0; background: rgba(255,255,255,.1); color: #e8edf5; font: 500 11px/1 var(--f-body); }
-.tray-btn:hover { background: rgba(255,255,255,.2); }
-.launchers { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.launch { display: grid; gap: 6px; text-align: left; padding: 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: #e8edf5; }
-.launch:hover { background: rgba(255,255,255,.16); }
-.launch b { font-size: 14px; }
-.launch span { color: #b7c1d3; font-size: 12px; }
-.launch .ico { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; font: 700 12px/1 var(--f-mono); }
-.win { position: absolute; inset: 12px; background: #1e1e1e; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
-.win-title { height: 28px; background: #2d2d2d; display: flex; align-items: center; padding: 0 10px; font: 500 11px/1 var(--f-body); color: #bbb; gap: 8px; }
-.win-body { flex: 1; padding: 12px; font: 400 11.5px/1.6 var(--f-mono); color: #d4d4d4; overflow: hidden; }
-.win-status { height: 24px; background: #2443d6; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; font: 500 11px/1 var(--f-body); color: #fff; }
-.acct-chip { border: 0; background: rgba(255,255,255,.18); color: #fff; padding: 4px 8px; border-radius: 4px; font: 600 11px/1 var(--f-body); }
-.acct-chip:hover { background: rgba(255,255,255,.3); }
-.popup { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(340px, calc(100% - 24px)); background: #fbfcfe; color: #111722; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,.45); padding: 16px; display: grid; gap: 10px; animation: pop .18s ease-out; }
-.popup.corner { left: auto; right: 10px; top: auto; bottom: 10px; transform: none; width: min(280px, calc(100% - 20px)); }
-@keyframes pop { from { opacity: .4; transform: translate(-50%, -46%); } }
-.popup.corner { animation: none; }
-.popup h4 { margin: 0; font: 700 16px/1.2 var(--f-display); }
-.popup .ctx { font-size: 12px; color: #5a6577; margin-top: -6px; }
-.acct { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 9px; border: 1px solid #d3d9e2; background: #fff; text-align: left; width: 100%; color: #111722; }
-.acct:hover { border-color: #2443d6; }
-.acct.sel { border-color: #2443d6; background: #eef1ff; }
-.acct .av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 700 12px/1 var(--f-body); color: #fff; }
-.acct b { display: block; font-size: 13px; }
-.acct small { color: #5a6577; font-size: 11.5px; }
-.acct .key { font: 500 10.5px/1 var(--f-mono); color: #5a6577; border: 1px solid #d3d9e2; border-radius: 4px; padding: 3px 5px; }
-.popup label { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: #333; }
-.popup .go { background: #2443d6; color: #fff; border: 0; border-radius: 8px; padding: 9px; font-weight: 600; }
-.toast { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); background: #11865f; color: #fff; padding: 8px 12px; border-radius: 8px; font: 600 12px/1.3 var(--f-body); box-shadow: 0 6px 20px rgba(0,0,0,.3); white-space: nowrap; max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; }
-.rules { background: #fbfcfe; color: #111722; border-radius: 10px; padding: 14px; display: grid; gap: 8px; }
-.rules h4 { margin: 0; font: 700 15px/1.2 var(--f-display); }
-.rule { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 10px; border: 1px solid #d3d9e2; border-radius: 8px; font-size: 12px; align-items: center; }
-.rule code { font: 500 11.5px/1.3 var(--f-mono); overflow-wrap: anywhere; }
-.rule .who { font-weight: 600; font-size: 12px; padding: 3px 8px; border-radius: 999px; color: #fff; }
-.hint { font: 500 11px/1.4 var(--f-mono); color: #b7c1d3; }
-.kbd { font: 500 11px/1 var(--f-mono); padding: 2px 5px; border: 1px solid rgba(255,255,255,.35); border-radius: 4px; }
-
-/* Screenshots / walkthrough tabs */
-.tabs { display: inline-flex; padding: 3px; gap: 2px; border-radius: 10px; background: var(--surface-2); }
-.tabs button { border: 0; background: transparent; padding: 6px 12px; border-radius: 8px; font-weight: 600; font-size: 14px; color: var(--muted); }
-.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(17,23,34,.12); }
-.shot-main { display: flex; justify-content: center; align-items: center; min-height: 420px; padding: 18px; border-radius: 16px; background: var(--surface-2); }
-.shot-main img { display: block; max-width: 100%; height: auto; border-radius: 6px; box-shadow: var(--shadow); }
-.shot-main img.phone-shot { width: 270px; border-radius: 26px; border: 8px solid var(--device); }
-.shot-main img.window-shot { image-rendering: auto; }
-.thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
-.thumbs button { flex: 0 0 auto; border: 2px solid transparent; border-radius: 10px; padding: 0; background: var(--surface); overflow: hidden; width: 64px; height: 64px; }
-.thumbs button[aria-current="true"] { border-color: var(--accent); }
-.thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-.app-icon { width: 56px; height: 56px; border-radius: 14px; }
-.deck-card .app-icon { width: 40px; height: 40px; border-radius: 10px; }
-.title-row { display: flex; align-items: center; gap: 14px; }
-
-/* Cloud Transfer mock window (fixed light look, like a real app screen) */
-.ct-win { position: absolute; inset: 10px; display: grid; grid-template-columns: 112px 1fr; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.4); font-family: var(--f-body); }
-.ct-side { background: #121838; color: #c8cde6; padding: 10px 8px; display: flex; flex-direction: column; gap: 4px; font-size: 11px; }
-.ct-side span { padding: 5px 7px; border-radius: 5px; }
-.ct-side .on { background: rgba(255,255,255,.1); color: #fff; }
-.ct-brand { display: flex; align-items: center; gap: 6px; color: #fff; font-weight: 600; font-size: 11.5px; margin-bottom: 6px; }
-.ct-brand img { width: 18px; height: 18px; border-radius: 5px; }
-.ct-main { background: #f4f6fb; color: #111722; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; overflow: hidden; }
-.ct-h { font: 700 17px/1.1 var(--f-display); }
-.ct-h small { font: 400 12px var(--f-body); color: #5a6577; margin-left: 4px; }
-.ct-steps { display: flex; gap: 12px; font-size: 11px; color: #5a6577; flex-wrap: wrap; }
-.ct-steps span { display: flex; align-items: center; gap: 5px; }
-.ct-steps i { font-style: normal; width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center; background: #e3e7f0; font-size: 10px; }
-.ct-steps .now, .ct-steps .done { color: #111722; font-weight: 600; }
-.ct-steps .now i, .ct-steps .done i { background: #2f4cf5; color: #fff; }
-.ct-from { display: flex; gap: 6px; flex-wrap: wrap; font-size: 11px; }
-.ct-from span { padding: 5px 8px; border: 1px solid #d3d9e2; border-radius: 7px; background: #fff; }
-.ct-from .sel { border-color: #2f4cf5; box-shadow: 0 0 0 1px #2f4cf5; font-weight: 600; }
-.ct-list { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; overflow: hidden; }
-.ct-row { display: grid; grid-template-columns: 18px 16px 1fr auto; gap: 8px; align-items: center; width: 100%; padding: 6px 10px; border: 0; border-bottom: 1px solid #eef1f6; background: #fff; color: #111722; font-size: 12px; text-align: left; }
-.ct-row:last-child { border-bottom: 0; }
-.ct-row:hover { background: #f5f7ff; }
-.ct-box { width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid #b8c0cf; display: grid; place-items: center; font-size: 10px; color: #fff; flex: none; }
-.ct-box.on { background: #2f4cf5; border-color: #2f4cf5; }
-.ct-radio { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid #b8c0cf; }
-.ct-radio.on { border: 4px solid #2f4cf5; }
-.ct-ico { width: 14px; height: 11px; border-radius: 2px; background: #f2b33d; }
-.ct-ico.gdoc { background: #3b7cf0; width: 11px; height: 14px; }
-.ct-ico.file { background: #9aa3b5; width: 11px; height: 14px; }
-.ct-nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ct-sz { color: #5a6577; font-size: 11px; }
-.ct-foot { margin-top: auto; display: flex; justify-content: flex-end; align-items: center; font-size: 11px; color: #5a6577; }
-.ct-card { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; padding: 10px; display: grid; gap: 6px; font-size: 12px; }
-.ct-card span { color: #5a6577; font-size: 11px; }
-.ct-opt { display: flex; gap: 8px; align-items: center; border: 0; background: transparent; color: #111722; font-size: 12px; text-align: left; padding: 2px 0; }
-.ct-safe { background: #e4f4ec; color: #0e6b4b; border-radius: 7px; padding: 7px 9px; font-size: 11px; }
-.ct-go { border: 0; background: #2f4cf5; color: #fff; padding: 7px 12px; border-radius: 7px; font-weight: 600; font-size: 12px; }
-.ct-go.ghost { background: #e6eaff; color: #2f4cf5; }
-.ct-pct { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.ct-pct b { font: 800 26px/1 var(--f-display); font-variant-numeric: tabular-nums; }
-.ct-pct span { font-size: 11px; font-variant-numeric: tabular-nums; }
-.ct-pct em { margin-left: auto; font-style: normal; font-size: 11px; font-weight: 600; color: #2f4cf5; background: #e6eaff; padding: 3px 8px; border-radius: 999px; }
-.ct-pct em.wait { color: #9a4a06; background: #fbe7d6; }
-.ct-pct em.ok { color: #0e6b4b; background: #e4f4ec; }
-.ct-bar { height: 6px; border-radius: 3px; background: #e3e7f0; overflow: hidden; }
-.ct-bar i { display: block; height: 100%; background: #2f4cf5; transition: width .25s linear; }
-.ct-notes { background: #fff; border: 1px solid #dfe4ec; border-radius: 8px; padding: 8px 10px; display: grid; gap: 6px; font-size: 11.5px; }
-.ct-notes .hl { color: #9a4a06; font-weight: 600; }
-@media (max-width: 480px) { .ct-win { grid-template-columns: 1fr; } .ct-side { display: none; } }
-
-footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-
-@media (max-width: 900px) {
-  .app-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
-  .demo { position: static; }
+/* ---------- Header (z-index scale: header 20, skip link 30) ---------- */
+.top { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+.top .wrap { height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 650; font-size: 18px; letter-spacing: -.02em; text-decoration: none; }
+.mark { width: 26px; height: 26px; flex: none; }
+.nav { display: flex; align-items: center; gap: 4px; }
+.nav a { text-decoration: none; color: var(--muted); font-size: 15px; font-weight: 500; padding: 8px 12px; border-radius: var(--r-pill); white-space: nowrap; transition: color .2s, background-color .2s; }
+.nav a:hover { color: var(--ink); background: var(--surface-2); }
+.theme-btn { display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: var(--r-pill); border: 1px solid var(--line); background: var(--surface); margin-left: 8px; transition: transform .2s var(--ease); }
+.theme-btn:active { transform: scale(.94); }
+.theme-btn .icon { width: 18px; height: 18px; }
+.theme-btn .i-dark { display: none; }
+:root[data-theme="dark"] .theme-btn .i-dark { display: block; }
+:root[data-theme="dark"] .theme-btn .i-light { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-btn .i-dark { display: block; }
+  :root:not([data-theme="light"]) .theme-btn .i-light { display: none; }
 }
-@media (max-width: 480px) {
-  .top nav { display: none; }
-  .desk { height: 460px; }
+
+/* ---------- Hero: split, copy left, a dealt hand of real screenshots right ---------- */
+.hero { padding-block: 72px 56px; overflow-x: clip; }
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); gap: 48px; align-items: center; }
+.hero-copy { display: grid; gap: 22px; max-width: 610px; }
+.eyebrow { font-family: var(--f-mono); font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 8px; }
+.hero h1 { font-size: clamp(40px, 4.4vw, 58px); font-weight: 650; letter-spacing: -.04em; line-height: 1.02; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero-sub { font-size: 19px; line-height: 1.5; color: var(--muted); max-width: 46ch; }
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; padding-top: 4px; }
+
+.hand { position: relative; aspect-ratio: 1.12; width: 100%; max-width: 620px; justify-self: end; }
+.card { position: absolute; transform: translate(var(--x, 0), var(--y, 0)) rotate(var(--r, 0deg)); transition: transform .5s var(--ease); }
+.card img { border-radius: 12px; box-shadow: var(--shadow); background: var(--surface); }
+.card-window { left: 0; top: 14%; width: 76%; --r: -5deg; z-index: 1; }
+.card-window img { border: 1px solid var(--line); }
+.card-phone { right: 2%; top: 0; width: 32%; --r: 4deg; z-index: 2; }
+.card-phone img { border-radius: 26px; border: 7px solid var(--device); }
+.card-dialog { left: 12%; bottom: 2%; width: 44%; --r: -1.5deg; z-index: 3; }
+.card-dialog img { border-radius: 8px; border: 1px solid var(--line); }
+.hand:hover .card-window { --y: -6px; --r: -6deg; }
+.hand:hover .card-phone { --y: -8px; --r: 5.5deg; }
+.hand:hover .card-dialog { --y: 6px; }
+@media (prefers-reduced-motion: no-preference) {
+  /* The deal: cards start stacked in the middle and fan out to their places. */
+  .card { animation: deal .9s var(--ease) backwards; }
+  .card-window { animation-delay: .05s; --from: translate(12%, 6%) rotate(0deg); }
+  .card-phone { animation-delay: .18s; --from: translate(-90%, 22%) rotate(0deg); }
+  .card-dialog { animation-delay: .31s; --from: translate(40%, -40%) rotate(0deg); }
+  @keyframes deal { from { opacity: 0; transform: var(--from) scale(.94); } }
+}
+
+/* ---------- App index: bento, one cell per app ---------- */
+.index { padding-block: 40px 88px; }
+.section-head { display: grid; gap: 10px; margin-bottom: 28px; max-width: 640px; }
+.section-head h2 { font-size: clamp(28px, 3.4vw, 40px); }
+.section-head p { color: var(--muted); font-size: 17px; }
+.bento { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); grid-auto-rows: minmax(250px, auto); gap: 16px; }
+.bento > :first-child { grid-row: span 2; }
+.tile { position: relative; display: grid; grid-template-rows: auto 1fr; gap: 18px; padding: 24px; border-radius: var(--r-m); background: var(--surface); border: 1px solid var(--line); text-decoration: none; overflow: hidden; isolation: isolate; transition: border-color .25s var(--ease), transform .25s var(--ease); }
+.tile:hover { border-color: var(--muted); }
+.tile:active { transform: scale(.995); }
+.tile-head { display: grid; gap: 8px; max-width: 440px; }
+.tile-title { display: flex; align-items: center; gap: 12px; }
+.tile h3 { font-size: 24px; }
+.tile p { color: var(--muted); }
+.tile-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-mono); font-size: 12.5px; padding: 4px 10px; border-radius: var(--r-pill); background: var(--surface-2); color: var(--ink); white-space: nowrap; }
+.tag .icon { width: 14px; height: 14px; }
+.tag-status { background: var(--accent-soft); color: var(--accent); }
+.tile-go { position: absolute; top: 22px; right: 22px; width: 36px; height: 36px; border-radius: var(--r-pill); display: grid; place-items: center; background: var(--surface-2); transition: transform .25s var(--ease), background-color .25s; }
+.tile-go .icon { width: 18px; height: 18px; }
+.tile:hover .tile-go { background: var(--accent); color: var(--on-accent); transform: translateX(3px); }
+.tile-shot { position: relative; align-self: stretch; min-height: 240px; border-radius: 12px; overflow: hidden; background: var(--tint, var(--surface-2)); }
+.tile-shot img { position: absolute; left: 50%; top: 22px; transform: translateX(-50%); transition: transform .5s var(--ease); box-shadow: var(--shadow-s); }
+.tile:hover .tile-shot img { transform: translate(-50%, -6px); }
+.tile-shot.is-phone { min-height: 300px; }
+.tile-shot.is-phone img { width: min(250px, 66%); border-radius: 24px; border: 6px solid var(--device); }
+.tile-shot.is-window img { width: calc(100% - 44px); border-radius: 10px; border: 1px solid var(--line); }
+.tile-shot.is-dialog { min-height: 270px; }
+.tile-shot.is-dialog img { top: 50%; width: min(360px, calc(100% - 44px)); border-radius: 8px; transform: translate(-50%, -50%); }
+.tile:hover .tile-shot.is-dialog img { transform: translate(-50%, calc(-50% - 6px)); }
+.app-icon { width: 40px; height: 40px; border-radius: 10px; flex: none; }
+.monogram { display: grid; place-items: center; color: #FCFDFB; font-weight: 650; font-size: 19px; }
+
+/* ---------- App sections ---------- */
+.app { padding-block: 88px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.app-grid { display: grid; gap: 40px 56px; align-items: start; }
+.app[data-layout="split"] .app-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-areas: "head demo" "body demo"; }
+.app[data-layout="split-reverse"] .app-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-areas: "demo head" "demo body"; }
+.app[data-layout="wide"] .app-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "demo" "body"; }
+.app-head { grid-area: head; display: grid; gap: 16px; }
+.app-demo { grid-area: demo; min-width: 0; }
+.app-body { grid-area: body; display: grid; gap: 36px; min-width: 0; }
+.app[data-layout^="split"] .app-demo { position: sticky; top: 88px; }
+.app[data-layout="wide"] .app-head { max-width: 760px; }
+.app[data-layout="wide"] .app-body { grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px 56px; }
+.app[data-layout="wide"] .app-body .notes { grid-column: 1 / -1; }
+.title-row { display: flex; align-items: center; gap: 14px; }
+.title-row .app-icon { width: 52px; height: 52px; border-radius: 13px; }
+.app h2 { font-size: clamp(32px, 4vw, 46px); }
+.lead { font-size: 19px; line-height: 1.5; color: var(--muted); max-width: 54ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.block { display: grid; gap: 14px; align-content: start; }
+.block h3 { font-size: 19px; letter-spacing: -.015em; }
+.block > p { max-width: 62ch; }
+.features { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 28px; }
+.features li { display: grid; gap: 4px; align-content: start; padding-top: 14px; border-top: 1px solid var(--line); }
+.features b { font-weight: 600; }
+.features span { color: var(--muted); font-size: 15px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: step; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; }
+.steps li::before { content: counter(step); font-family: var(--f-mono); font-size: 13px; width: 28px; height: 28px; border-radius: var(--r-pill); display: grid; place-items: center; background: var(--surface-2); color: var(--ink); }
+.notes { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); }
+.notes summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; font-weight: 600; }
+.notes summary::-webkit-details-marker { display: none; }
+.notes summary .icon { width: 18px; height: 18px; transition: transform .25s var(--ease); color: var(--muted); }
+.notes[open] summary .icon { transform: rotate(180deg); }
+.notes ul { margin: 0; padding: 0 20px 18px 38px; display: grid; gap: 8px; color: var(--muted); font-size: 15px; }
+
+/* ---------- Demo panel ---------- */
+.panel { background: var(--surface-2); border-radius: var(--r-m); padding: 16px; display: grid; gap: 14px; }
+.tabs { display: inline-flex; padding: 4px; gap: 2px; border-radius: var(--r-pill); background: var(--surface-3); justify-self: start; }
+.tabs button { display: inline-flex; align-items: center; gap: 7px; border: 0; background: transparent; padding: 7px 14px; border-radius: var(--r-pill); font-weight: 550; font-size: 14px; color: var(--muted); transition: background-color .2s, color .2s; }
+.tabs button .icon { width: 16px; height: 16px; }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-s); }
+.stage { display: grid; place-items: center; min-height: 440px; padding: 12px 0; }
+.stage:has(.shot-dialog) { min-height: 0; padding: 40px 0; }
+.stage.is-fade { animation: fade .35s var(--ease); }
+@keyframes fade { from { opacity: .3; } }
+.shot-phone { width: 270px; border-radius: 30px; border: 8px solid var(--device); box-shadow: var(--shadow); }
+.shot-window { width: 100%; border-radius: 10px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.shot-dialog { width: min(472px, 100%); border-radius: 8px; box-shadow: var(--shadow); }
+.caption { display: grid; gap: 4px; min-height: 72px; padding: 0 4px; }
+.caption h3 { font-size: 17px; letter-spacing: -.01em; }
+.caption p { color: var(--muted); font-size: 15px; }
+.thumbs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 4px; scrollbar-width: thin; }
+.thumbs button { flex: none; width: 60px; height: 60px; padding: 0; border-radius: var(--r-s); border: 2px solid transparent; overflow: hidden; background: var(--surface); transition: border-color .2s; }
+.thumbs button[aria-current="true"] { border-color: var(--accent); }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.steps-nav { display: flex; gap: 6px; overflow-x: auto; padding: 2px; scrollbar-width: none; }
+.steps-nav button { flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: var(--r-pill); padding: 6px 12px; font-size: 13.5px; font-weight: 500; white-space: nowrap; transition: border-color .2s, color .2s; }
+.steps-nav button[aria-current="step"] { border-color: var(--accent); color: var(--ink); }
+.demo-nav { display: flex; justify-content: space-between; gap: 10px; }
+
+/* Phone frame (walkthroughs) */
+.phone { width: 300px; max-width: 100%; height: 600px; background: var(--device); border-radius: 42px; padding: 11px; box-shadow: var(--shadow); }
+.phone-screen { height: 100%; background: var(--g-bg); color: var(--g-text); border-radius: 32px; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+.phone-status { padding: 13px 26px 4px; font: 600 12px/1 var(--f-sans); }
+.phone-notch { position: absolute; top: 9px; left: 50%; transform: translateX(-50%); width: 86px; height: 22px; background: var(--device); border-radius: 12px; }
+.phone-body { flex: 1; overflow-y: auto; padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 10px; font-size: 14px; scrollbar-width: none; }
+.scr-title { font: 650 22px/1.15 var(--f-sans); letter-spacing: -.02em; }
+.scr-sub { color: var(--g-muted); font-size: 13px; margin-top: -6px; }
+.g-list { display: grid; gap: 6px; }
+.g-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; background: var(--g-surface); border: 1px solid var(--g-border); border-radius: 12px; }
+.g-item small { display: block; color: var(--g-muted); font-size: 12px; }
+.g-price { font: 500 13px/1 var(--f-mono); font-variant-numeric: tabular-nums; color: var(--g-muted); }
+.g-choice { display: flex; align-items: center; gap: 12px; padding: 13px 14px; text-align: left; background: var(--g-surface); border: 1px solid var(--g-border); border-radius: 14px; width: 100%; color: var(--g-text); }
+.g-choice:hover { border-color: var(--g-accent); }
+.g-choice svg { width: 24px; height: 24px; color: var(--g-accent); flex: none; }
+.g-choice b { display: block; font-size: 14.5px; font-weight: 600; }
+.g-choice span { color: var(--g-muted); font-size: 12.5px; }
+.g-btn { display: block; width: 100%; text-align: center; border: 0; border-radius: 12px; padding: 11px; font-weight: 600; background: var(--g-accent-soft); color: var(--g-accent); }
+.viewfinder { position: relative; border-radius: 14px; background: var(--g-alt); padding: 12px; overflow: hidden; }
+.receipt { background: #FFFEF9; color: #222; font: 400 11px/1.55 var(--f-mono); padding: 12px; border-radius: 4px; box-shadow: 0 2px 8px rgb(0 0 0 / .15); }
+.receipt .r { display: flex; justify-content: space-between; gap: 8px; }
+.receipt .r.hit { color: #1F7A4D; }
+.receipt .r.extra { color: #9A5800; }
+.receipt .head { text-align: center; margin-bottom: 6px; }
+.scanline { position: absolute; left: 8px; right: 8px; top: 12px; height: 2px; background: var(--g-accent); }
+@media (prefers-reduced-motion: no-preference) { .scanline { animation: scan 1.2s ease-in-out infinite alternate; } }
+@keyframes scan { to { top: calc(100% - 14px); } }
+.g-pill { display: inline-flex; font-size: 12.5px; font-weight: 600; padding: 5px 10px; border-radius: 999px; background: var(--g-accent-soft); color: var(--g-accent); }
+.g-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.g-stat { border-radius: 14px; padding: 12px; display: grid; gap: 1px; }
+.g-stat b { font-size: 24px; font-weight: 750; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.g-stat span { font-size: 12.5px; font-weight: 600; }
+.g-stat small { font-size: 11.5px; color: var(--g-muted); }
+.g-stat.missed { background: var(--g-missed-soft); color: var(--g-missed); }
+.g-stat.extra { background: var(--g-extra-soft); color: var(--g-extra); }
+.g-group { display: grid; gap: 6px; }
+.g-group h4 { margin: 6px 0 0; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; }
+.g-line { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border-radius: 12px; background: var(--g-surface); border: 1px solid var(--g-border); }
+.g-line .nm { flex: 1; }
+.g-line svg { width: 16px; height: 16px; flex: none; }
+.g-line.missed svg { color: var(--g-missed); }
+.g-line.extra svg { color: var(--g-extra); }
+.g-line.got svg { color: var(--g-accent); }
+
+/* Desktop frame (walkthroughs) */
+.desk { width: 100%; max-width: 580px; height: 420px; background: var(--device); border-radius: 14px; padding: 10px; box-shadow: var(--shadow); }
+.app[data-layout="wide"] .desk { max-width: 820px; height: 460px; }
+.desk-screen { height: 100%; border-radius: 6px; overflow: hidden; position: relative; display: flex; flex-direction: column; background: linear-gradient(160deg, #2D4F92, #1B2B50 60%, #14213D); color: #E8EDF5; font-size: 13px; }
+.desk-area { flex: 1; position: relative; padding: 14px; overflow: hidden; }
+.taskbar { height: 38px; background: rgb(12 16 26 / .88); display: flex; align-items: center; justify-content: space-between; padding: 0 10px; gap: 8px; font: 500 11px/1 var(--f-sans); color: #C9D1DE; }
+.taskbar .apps { display: flex; gap: 6px; }
+.taskbar .tb { width: 26px; height: 26px; border-radius: 6px; background: rgb(255 255 255 / .12); display: grid; place-items: center; font: 600 10px/1 var(--f-mono); }
+.tray-btn { display: flex; align-items: center; gap: 7px; padding: 6px 9px; border-radius: 6px; border: 0; background: rgb(255 255 255 / .1); color: #E8EDF5; font: 500 11.5px/1 var(--f-sans); }
+.tray-btn:hover { background: rgb(255 255 255 / .2); }
+.tray-btn img { width: 14px; height: 14px; border-radius: 3px; }
+.launchers { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.launch { display: grid; gap: 6px; text-align: left; padding: 14px; border-radius: 10px; border: 1px solid rgb(255 255 255 / .18); background: rgb(255 255 255 / .08); color: #E8EDF5; }
+.launch:hover { background: rgb(255 255 255 / .16); }
+.launch b { font-size: 14px; font-weight: 600; }
+.launch span { color: #B7C1D3; font-size: 12px; }
+.launch .ico { width: 30px; height: 30px; border-radius: 7px; display: grid; place-items: center; font: 600 12px/1 var(--f-mono); color: #fff; }
+.hint { font-size: 12px; color: #B7C1D3; margin-top: 14px; }
+.win { position: absolute; inset: 12px; background: #1E1E1E; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgb(0 0 0 / .4); }
+.win-title { height: 30px; background: #2D2D2D; display: flex; align-items: center; padding: 0 12px; font: 500 11.5px/1 var(--f-sans); color: #BBB; gap: 8px; }
+.win-body { flex: 1; padding: 12px 14px; font: 400 11.5px/1.7 var(--f-mono); color: #D4D4D4; overflow: hidden; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+/* Windows-style dialog: Windows draws these light, whatever the page theme. */
+.popup { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); width: min(360px, calc(100% - 24px)); background: #F9F9F9; color: #1B1B1B; border-radius: 8px; box-shadow: 0 24px 60px rgb(0 0 0 / .45); padding: 16px; display: grid; gap: 10px; font-family: "Segoe UI", var(--f-sans); }
+.popup.corner { left: auto; right: 10px; top: auto; bottom: 10px; transform: none; width: min(290px, calc(100% - 20px)); gap: 6px; padding: 10px; }
+.popup h4 { margin: 0; font-size: 15.5px; font-weight: 600; }
+.popup .ctx { font-size: 12px; color: #616161; }
+.acct { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 6px; border: 1px solid #D1D1D1; background: #FFF; text-align: left; width: 100%; color: #1B1B1B; }
+.acct:hover { border-color: #0F6CBD; }
+.acct.sel { border-color: #0F6CBD; background: #EBF3FC; }
+.acct .av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 600; font-size: 12px; color: #FFF; }
+.acct b { font-size: 13px; font-weight: 600; }
+.acct .tick { font-size: 12px; color: #0F6CBD; font-weight: 700; }
+.popup label { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: #333; }
+.popup .go { background: #0F6CBD; color: #FFF; border: 0; border-radius: 4px; padding: 8px; font-weight: 600; }
+.popup .go:hover { background: #115EA3; }
+.toast { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); background: #F9F9F9; color: #1B1B1B; border-left: 4px solid #107C10; padding: 9px 12px; border-radius: 6px; font: 500 12px/1.35 var(--f-sans); box-shadow: 0 8px 24px rgb(0 0 0 / .3); width: max-content; max-width: calc(100% - 24px); }
+
+/* Cloud Transfer mock window (uses the app's palette) */
+.ct-win { position: absolute; inset: 10px; display: grid; grid-template-columns: 118px 1fr; border-radius: 8px; overflow: hidden; box-shadow: 0 10px 30px rgb(0 0 0 / .4); font-family: var(--f-sans); }
+.ct-side { background: var(--ct-sidebar); color: var(--ct-sidebar-text); padding: 10px 8px; display: flex; flex-direction: column; gap: 3px; font-size: 11.5px; }
+.ct-side span { padding: 6px 8px; border-radius: 6px; }
+.ct-side .on { background: rgb(255 255 255 / .1); color: #F4F6FB; }
+.ct-brand { display: flex; align-items: center; gap: 6px; color: #F4F6FB; font-weight: 600; font-size: 11.5px; margin-bottom: 8px; }
+.ct-brand img { width: 18px; height: 18px; border-radius: 5px; }
+.ct-main { background: var(--ct-bg); color: var(--ct-text); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; min-width: 0; overflow: hidden; }
+.ct-h { font-weight: 650; font-size: 17px; letter-spacing: -.02em; }
+.ct-h small { font-weight: 400; font-size: 12px; color: var(--ct-muted); margin-left: 4px; letter-spacing: 0; }
+.ct-steps { display: flex; gap: 12px; font-size: 11.5px; color: var(--ct-muted); flex-wrap: wrap; }
+.ct-steps span { display: flex; align-items: center; gap: 5px; }
+.ct-steps i { font-style: normal; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; background: var(--ct-alt); font-size: 10px; }
+.ct-steps .now, .ct-steps .done { color: var(--ct-text); font-weight: 600; }
+.ct-steps .now i, .ct-steps .done i { background: var(--ct-primary); color: var(--ct-on-primary); }
+.ct-from { display: flex; gap: 6px; flex-wrap: wrap; font-size: 11.5px; }
+.ct-from span { padding: 5px 9px; border: 1.5px solid var(--ct-border); border-radius: 8px; background: var(--ct-surface); }
+.ct-from .sel { border-color: var(--ct-primary); font-weight: 600; }
+.ct-list { background: var(--ct-surface); border: 1px solid var(--ct-border); border-radius: 10px; overflow: hidden; }
+.ct-row { display: grid; grid-template-columns: 18px 16px 1fr auto; gap: 8px; align-items: center; width: 100%; padding: 6px 10px; border: 0; border-bottom: 1px solid var(--ct-divider); background: transparent; color: var(--ct-text); font-size: 12px; text-align: left; }
+.ct-row:last-child { border-bottom: 0; }
+.ct-row:hover { background: var(--ct-selected); }
+.ct-box { width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid var(--ct-control); display: grid; place-items: center; font-size: 10px; color: var(--ct-on-primary); flex: none; }
+.ct-box.on { background: var(--ct-primary); border-color: var(--ct-primary); }
+.ct-radio { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--ct-control); }
+.ct-radio.on { border: 4px solid var(--ct-primary); }
+.ct-ico { width: 14px; height: 11px; border-radius: 2px; background: var(--ct-folder); }
+.ct-ico.gdoc { background: var(--ct-gdoc); width: 11px; height: 14px; }
+.ct-ico.file { background: var(--ct-file); width: 11px; height: 14px; }
+.ct-nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ct-sz { color: var(--ct-muted); font-size: 11px; }
+.ct-foot { margin-top: auto; display: flex; justify-content: flex-end; align-items: center; font-size: 11.5px; color: var(--ct-muted); }
+.ct-card { background: var(--ct-surface); border: 1px solid var(--ct-border); border-radius: 10px; padding: 10px; display: grid; gap: 6px; font-size: 12px; }
+.ct-card span { color: var(--ct-muted); font-size: 11.5px; }
+.ct-opt { display: flex; gap: 8px; align-items: center; border: 0; background: transparent; color: var(--ct-text); font-size: 12px; text-align: left; padding: 2px 0; }
+.ct-safe { background: var(--ct-success-soft); color: var(--ct-success); border-radius: 8px; padding: 7px 9px; font-size: 11.5px; }
+.ct-go { border: 0; background: var(--ct-primary); color: var(--ct-on-primary); padding: 7px 12px; border-radius: 8px; font-weight: 600; font-size: 12px; }
+.ct-go.ghost { background: var(--ct-primary-soft); color: var(--ct-primary); }
+.ct-pct { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ct-pct b { font-weight: 700; font-size: 26px; letter-spacing: -.03em; font-variant-numeric: tabular-nums; line-height: 1; }
+.ct-pct span { font-size: 11.5px; color: var(--ct-muted); font-variant-numeric: tabular-nums; }
+.ct-pct em { margin-left: auto; font-style: normal; font-size: 11px; font-weight: 600; color: var(--ct-primary); background: var(--ct-primary-soft); padding: 3px 8px; border-radius: 999px; }
+.ct-pct em.wait { color: var(--ct-wait); background: var(--ct-wait-soft); }
+.ct-pct em.ok { color: var(--ct-success); background: var(--ct-success-soft); }
+.ct-bar { height: 6px; border-radius: 3px; background: var(--ct-track); overflow: hidden; }
+.ct-bar i { display: block; height: 100%; background: var(--ct-primary); transition: width .25s linear; }
+.ct-notes { background: var(--ct-surface); border: 1px solid var(--ct-border); border-radius: 10px; padding: 8px 10px; display: grid; gap: 6px; font-size: 11.5px; }
+.ct-notes .hl { color: var(--ct-wait); font-weight: 600; }
+
+/* ---------- Footer ---------- */
+footer { border-top: 1px solid var(--line); padding-block: 40px 56px; }
+footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.foot-copy { display: grid; gap: 10px; max-width: 560px; color: var(--muted); font-size: 15px; }
+.foot-copy .brand { color: var(--ink); }
+.foot-small { color: var(--muted); font-size: 14px; }
+
+/* ---------- Reveal on scroll (IntersectionObserver adds .is-in) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .js [data-reveal].is-in { opacity: 1; transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1023px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .hand { justify-self: center; max-width: 560px; width: 94%; }
+  .app[data-layout] .app-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "demo" "body"; }
+  .app[data-layout^="split"] .app-demo { position: static; }
+  .app[data-layout="wide"] .app-body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .wrap { padding-inline: 16px; }
+  .nav a { display: none; }
+  .hero { padding-block: 40px 24px; }
+  .hero-sub, .lead { font-size: 17px; }
+  .bento { grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; }
+  .bento > :first-child { grid-row: auto; }
+  .tile { padding: 20px; }
+  .app { padding-block: 64px; }
+  .features { grid-template-columns: minmax(0, 1fr); }
+  .stage { min-height: 0; }
+  .desk, .app[data-layout="wide"] .desk { height: 470px; }
+  .ct-win { grid-template-columns: 1fr; }
+  .ct-side { display: none; }
+  footer .wrap { grid-template-columns: minmax(0, 1fr); }
 }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-android-logo" viewBox="0 0 256 256"><path d="M176,148a12,12,0,1,1-12-12A12,12,0,0,1,176,148ZM92,136a12,12,0,1,0,12,12A12,12,0,0,0,92,136Zm148,24v24a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V161.13A113.38,113.38,0,0,1,51.4,78.72L26.34,53.66A8,8,0,0,1,37.66,42.34L63.82,68.5a111.43,111.43,0,0,1,128.55-.19l26-26a8,8,0,0,1,11.32,11.32L204.82,78.5c.75.71,1.5,1.43,2.24,2.17A111.25,111.25,0,0,1,240,160Zm-16,0a96,96,0,0,0-96-96h-.34C74.91,64.18,32,107.75,32,161.13V184H224Z"/></symbol>
+<symbol id="i-apple-logo" viewBox="0 0 256 256"><path d="M223.3,169.59a8.07,8.07,0,0,0-2.8-3.4C203.53,154.53,200,134.64,200,120c0-17.67,13.47-33.06,21.5-40.67a8,8,0,0,0,0-11.62C208.82,55.74,187.82,48,168,48a72.2,72.2,0,0,0-40,12.13,71.56,71.56,0,0,0-90.71,9.09A74.63,74.63,0,0,0,16,123.4a127.06,127.06,0,0,0,40.14,89.73A39.8,39.8,0,0,0,83.59,224h87.68a39.84,39.84,0,0,0,29.12-12.57,125,125,0,0,0,17.82-24.6C225.23,174,224.33,172,223.3,169.59Zm-34.63,30.94a23.76,23.76,0,0,1-17.4,7.47H83.59a23.82,23.82,0,0,1-16.44-6.51A111.14,111.14,0,0,1,32,123,58.5,58.5,0,0,1,48.65,80.47,54.81,54.81,0,0,1,88,64h.78A55.45,55.45,0,0,1,123,76.28a8,8,0,0,0,10,0A55.44,55.44,0,0,1,168,64a70.64,70.64,0,0,1,36,10.35c-13,14.52-20,30.47-20,45.65,0,23.77,7.64,42.73,22.18,55.3A105.82,105.82,0,0,1,188.67,200.53ZM128.23,30A40,40,0,0,1,167,0h1a8,8,0,0,1,0,16h-1a24,24,0,0,0-23.24,18,8,8,0,1,1-15.5-4Z"/></symbol>
+<symbol id="i-arrow-counter-clockwise" viewBox="0 0 256 256"><path d="M224,128a96,96,0,0,1-94.71,96H128A95.38,95.38,0,0,1,62.1,197.8a8,8,0,0,1,11-11.63A80,80,0,1,0,71.43,71.39a3.07,3.07,0,0,1-.26.25L44.59,96H72a8,8,0,0,1,0,16H24a8,8,0,0,1-8-8V56a8,8,0,0,1,16,0V85.8L60.25,60A96,96,0,0,1,224,128Z"/></symbol>
+<symbol id="i-arrow-down" viewBox="0 0 256 256"><path d="M205.66,149.66l-72,72a8,8,0,0,1-11.32,0l-72-72a8,8,0,0,1,11.32-11.32L120,196.69V40a8,8,0,0,1,16,0V196.69l58.34-58.35a8,8,0,0,1,11.32,11.32Z"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 256 256"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></symbol>
+<symbol id="i-barcode" viewBox="0 0 256 256"><path d="M232,48V88a8,8,0,0,1-16,0V56H184a8,8,0,0,1,0-16h40A8,8,0,0,1,232,48ZM72,200H40V168a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16Zm152-40a8,8,0,0,0-8,8v32H184a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V168A8,8,0,0,0,224,160ZM32,96a8,8,0,0,0,8-8V56H72a8,8,0,0,0,0-16H32a8,8,0,0,0-8,8V88A8,8,0,0,0,32,96ZM80,80a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,80,80Zm104,88V88a8,8,0,0,0-16,0v80a8,8,0,0,0,16,0ZM144,80a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,144,80Zm-32,0a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,112,80Z"/></symbol>
+<symbol id="i-camera" viewBox="0 0 256 256"><path d="M208,56H180.28L166.65,35.56A8,8,0,0,0,160,32H96a8,8,0,0,0-6.65,3.56L75.71,56H48A24,24,0,0,0,24,80V192a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80A24,24,0,0,0,208,56Zm8,136a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H80a8,8,0,0,0,6.66-3.56L100.28,48h55.43l13.63,20.44A8,8,0,0,0,176,72h32a8,8,0,0,1,8,8ZM128,88a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,88Zm0,72a28,28,0,1,1,28-28A28,28,0,0,1,128,160Z"/></symbol>
+<symbol id="i-caret-down" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></symbol>
+<symbol id="i-check-circle-fill" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z"/></symbol>
+<symbol id="i-check" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></symbol>
+<symbol id="i-clipboard-text" viewBox="0 0 256 256"><path d="M168,152a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,152Zm-8-40H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm56-64V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V48A16,16,0,0,1,56,32H92.26a47.92,47.92,0,0,1,71.48,0H200A16,16,0,0,1,216,48ZM96,64h64a32,32,0,0,0-64,0ZM200,48H173.25A47.93,47.93,0,0,1,176,64v8a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V64a47.93,47.93,0,0,1,2.75-16H56V216H200Z"/></symbol>
+<symbol id="i-desktop" viewBox="0 0 256 256"><path d="M208,40H48A24,24,0,0,0,24,64V176a24,24,0,0,0,24,24h72v16H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V200h72a24,24,0,0,0,24-24V64A24,24,0,0,0,208,40ZM48,56H208a8,8,0,0,1,8,8v80H40V64A8,8,0,0,1,48,56ZM208,184H48a8,8,0,0,1-8-8V160H216v16A8,8,0,0,1,208,184Z"/></symbol>
+<symbol id="i-device-mobile" viewBox="0 0 256 256"><path d="M176,16H80A24,24,0,0,0,56,40V216a24,24,0,0,0,24,24h96a24,24,0,0,0,24-24V40A24,24,0,0,0,176,16ZM72,64H184V192H72Zm8-32h96a8,8,0,0,1,8,8v8H72V40A8,8,0,0,1,80,32Zm96,192H80a8,8,0,0,1-8-8v-8H184v8A8,8,0,0,1,176,224Z"/></symbol>
+<symbol id="i-hand-pointing" viewBox="0 0 256 256"><path d="M196,88a27.86,27.86,0,0,0-13.35,3.39A28,28,0,0,0,144,74.7V44a28,28,0,0,0-56,0v80l-3.82-6.13A28,28,0,0,0,35.73,146l4.67,8.23C74.81,214.89,89.05,240,136,240a88.1,88.1,0,0,0,88-88V116A28,28,0,0,0,196,88Zm12,64a72.08,72.08,0,0,1-72,72c-37.63,0-47.84-18-81.68-77.68l-4.69-8.27,0-.05A12,12,0,0,1,54,121.61a11.88,11.88,0,0,1,6-1.6,12,12,0,0,1,10.41,6,1.76,1.76,0,0,0,.14.23l18.67,30A8,8,0,0,0,104,152V44a12,12,0,0,1,24,0v68a8,8,0,0,0,16,0V100a12,12,0,0,1,24,0v20a8,8,0,0,0,16,0v-4a12,12,0,0,1,24,0Z"/></symbol>
+<symbol id="i-images" viewBox="0 0 256 256"><path d="M216,40H72A16,16,0,0,0,56,56V72H40A16,16,0,0,0,24,88V200a16,16,0,0,0,16,16H184a16,16,0,0,0,16-16V184h16a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM72,56H216v62.75l-10.07-10.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L72,109.37ZM184,200H40V88H56v80a16,16,0,0,0,16,16H184Zm32-32H72V132l36-36,49.66,49.66a8,8,0,0,0,11.31,0L194.63,120,216,141.38V168ZM160,84a12,12,0,1,1,12,12A12,12,0,0,1,160,84Z"/></symbol>
+<symbol id="i-info" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm16-40a8,8,0,0,1-8,8,16,16,0,0,1-16-16V128a8,8,0,0,1,0-16,16,16,0,0,1,16,16v40A8,8,0,0,1,144,176ZM112,84a12,12,0,1,1,12,12A12,12,0,0,1,112,84Z"/></symbol>
+<symbol id="i-minus-circle" viewBox="0 0 256 256"><path d="M176,128a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,128Zm56,0A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></symbol>
+<symbol id="i-moon" viewBox="0 0 256 256"><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z"/></symbol>
+<symbol id="i-plus-circle" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm48-88a8,8,0,0,1-8,8H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32A8,8,0,0,1,176,128Z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 256 256"><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></symbol>
+<symbol id="i-windows-logo" viewBox="0 0 256 256"><path d="M208,136H128a8,8,0,0,0-8,8v57.45a8,8,0,0,0,6.57,7.88l80,14.54A7.61,7.61,0,0,0,208,224a8,8,0,0,0,8-8V144A8,8,0,0,0,208,136Zm-8,70.41-64-11.63V152h64ZM96,136H32a8,8,0,0,0-8,8v40a8,8,0,0,0,6.57,7.87l64,11.64a8.54,8.54,0,0,0,1.43.13,8,8,0,0,0,8-8V144A8,8,0,0,0,96,136Zm-8,50.05-48-8.73V152H88ZM213.13,33.86a8,8,0,0,0-6.56-1.73l-80,14.55A8,8,0,0,0,120,54.55V112a8,8,0,0,0,8,8h80a8,8,0,0,0,8-8V40A8,8,0,0,0,213.13,33.86ZM200,104H136V61.22l64-11.63ZM101.13,54.22a8,8,0,0,0-6.56-1.73l-64,11.64A8,8,0,0,0,24,72v40a8,8,0,0,0,8,8H96a8,8,0,0,0,8-8V60.36A8,8,0,0,0,101.13,54.22ZM88,104H40V78.68L88,70Z"/></symbol>
+</svg>
+<a class="skip" href="#apps">Skip to the apps</a>
 
-<div class="wrap">
-  <header class="top">
-    <a class="brand" href="#top" aria-label="Widgetdeck home"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span>Widgetdeck</a>
-    <nav id="topnav" aria-label="Apps"></nav>
-  </header>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Widgetdeck, back to top">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="17" height="22" rx="4" transform="rotate(-10 11.5 18)" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="12" y="3" width="17" height="22" rx="4" transform="rotate(8 20.5 14)" fill="var(--accent)"/></svg>
+      Widgetdeck
+    </a>
+    <nav class="nav" aria-label="Apps">
+      <span id="topnav" style="display:contents"></span>
+      <button class="theme-btn" id="theme" type="button" aria-label="Switch to dark mode">
+        <svg class="icon i-light" aria-hidden="true"><use href="#i-moon"/></svg>
+        <svg class="icon i-dark" aria-hidden="true"><use href="#i-sun"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
 
-  <section class="intro" id="top">
-    <span class="label">Apps in the works</span>
-    <h1>Small apps that fix <em>everyday</em> annoyances.</h1>
-    <p>Every app AJ is building, in one place. Each one has the idea, what it does, real screenshots, and a clickable walkthrough. Names are working names until they are decided.</p>
+<main>
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow" id="count">Apps in progress</span>
+        <h1>Small apps that fix <em>everyday</em> annoyances.</h1>
+        <p class="hero-sub">Every app AJ is building, with the problem it solves, real screenshots and a demo you can click through.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#apps">See the apps <svg class="icon" aria-hidden="true"><use href="#i-arrow-down"/></svg></a>
+        </div>
+      </div>
+      <div class="hand" role="group" aria-label="Screenshots from the three apps">
+        <picture class="card card-window">
+          <source srcset="img/transfer-progress-dark.webp" media="(prefers-color-scheme: dark)" data-theme-src>
+          <img src="img/transfer-progress.webp" width="1280" height="820" alt="Cloud Transfer on Windows, copying folders from Google Drive to OneDrive" fetchpriority="high">
+        </picture>
+        <picture class="card card-phone">
+          <source srcset="img/grocery-results-dark.webp" media="(prefers-color-scheme: dark)" data-theme-src>
+          <img src="img/grocery-results.webp" width="600" height="1298" alt="Grocery Check trip results: 2 items missed and 3 extra items adding $13.78">
+        </picture>
+        <picture class="card card-dialog">
+          <img src="img/switcher-picker.webp" width="472" height="322" alt="The Claude account picker on Windows 11">
+        </picture>
+      </div>
+    </div>
   </section>
 
-  <section class="deck" id="deck" aria-label="All apps"></section>
+  <section class="index" id="apps" aria-labelledby="apps-h">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <h2 id="apps-h">The apps</h2>
+        <p>Each one started as an everyday annoyance. Pick one to see what it does and try the demo.</p>
+      </div>
+      <div class="bento" id="deck"></div>
+    </div>
+  </section>
 
-  <main id="apps"></main>
+  <div id="app-sections"></div>
+  <noscript><div class="wrap" style="padding-block:40px">The app pages and demos need JavaScript. The apps are Grocery Check, Claude Account Switcher and Cloud Transfer.</div></noscript>
+</main>
 
-  <footer>
-    <span>Widgetdeck · screenshots are from the current builds; walkthroughs are simplified.</span>
-    <span id="count"></span>
-  </footer>
-</div>
+<footer>
+  <div class="wrap">
+    <div class="foot-copy">
+      <a class="brand" href="#top">
+        <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="17" height="22" rx="4" transform="rotate(-10 11.5 18)" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="12" y="3" width="17" height="22" rx="4" transform="rotate(8 20.5 14)" fill="var(--accent)"/></svg>
+        Widgetdeck
+      </a>
+      <p>Apps AJ is building. Names are working names until they are decided, and more apps will be added here as they take shape.</p>
+      <p>Screenshots come from the current builds. Walkthroughs are simplified versions of the real screens.</p>
+    </div>
+    <p class="foot-small">© 2026 Widgetdeck</p>
+  </div>
+</footer>
 
 <script>
 /* ==========================================================================
-   APPS — add a new app by appending an object to this array.
-   Fields: id, name (working name until decided), icon (optional image path),
-   tagline, platforms[], status, problem, features[{title,text}], how[], notes[],
-   screenshots[{src, caption, kind: "phone" | "window"}] (optional),
-   demo: { frame: "phone" | "desktop", init(): state, steps: [{title, caption, render(state, api)}] }
+   APPS: add a new app by appending an object to this array.
+   Fields: id, name, navName (short label for the header), icon (image path) or
+   color + monogram (letter tile), short (one line for the index), tagline,
+   platforms [{label, icon}], status, problem, features [{title, text}], how [],
+   notes [], layout: "split" | "split-reverse" | "wide" (vary it between neighbours),
+   screenshots [{src, dark?, caption, kind: "phone" | "window" | "dialog"}],
+   demo { frame: "phone" | "desktop", init(): state, steps [{title, caption, render(state, api), on?}], onStep? }.
    render() returns an HTML string; api.set(patch) updates state, api.go(i) jumps to a step.
    Clickable elements use data-act="name"; handle them in step.on[name](state, api, el).
    ========================================================================== */
 
 const money = n => "$" + n.toFixed(2);
+const ico = (id, cls = "icon") => `<svg class="${cls}" aria-hidden="true"><use href="#i-${id}"/></svg>`;
 
 /* ---------- App 1: Grocery Check ---------- */
-/* Sample trip mirrors the one in the app's own screenshots. */
+/* The sample trip mirrors the one in the app's own screenshots. */
 const GROCERY_LIST = [
   { id: "milk",    name: "Milk",           est: 3.50 },
   { id: "banana",  name: "Bananas",        est: 1.50 },
@@ -338,14 +581,14 @@ const GROCERY_LIST = [
   { id: "tomato",  name: "Tomatoes",       est: 2.50 },
 ];
 const RECEIPT = [
-  { text: "GV 2% MILK GAL",       price: 3.49, match: "milk" },
-  { text: "ORG BANANAS",          price: 1.32, match: "banana" },
-  { text: "LRG EGGS 12CT",        price: 4.19, match: "eggs" },
-  { text: "WHT BREAD",            price: 2.79, match: "bread" },
-  { text: "CHKN BRST BNLS",       price: 9.87, match: "chicken" },
-  { text: "POTATO CHPS BBQ",      price: 4.29, match: null, label: "Potato Chps Bbq" },
-  { text: "2 @ 2.00 COOKIES CHOC",price: 4.00, match: null, label: "Cookies Choc Chip ×2" },
-  { text: "ICE CRM VAN",          price: 5.49, match: null, label: "Ice Crm Van" },
+  { text: "GV 2% MILK GAL",        price: 3.49, match: "milk" },
+  { text: "ORG BANANAS",           price: 1.32, match: "banana" },
+  { text: "LRG EGGS 12CT",         price: 4.19, match: "eggs" },
+  { text: "WHT BREAD",             price: 2.79, match: "bread" },
+  { text: "CHKN BRST BNLS",        price: 9.87, match: "chicken" },
+  { text: "POTATO CHPS BBQ",       price: 4.29, match: null, label: "Potato Chps Bbq" },
+  { text: "2 @ 2.00 COOKIES CHOC", price: 4.00, match: null, label: "Cookies Choc Chip ×2" },
+  { text: "ICE CRM VAN",           price: 5.49, match: null, label: "Ice Crm Van" },
 ];
 const RECEIPT_TAX = 1.97;
 
@@ -363,13 +606,15 @@ function groceryCompare() {
 function receiptHTML(highlight) {
   const total = RECEIPT.reduce((s, r) => s + r.price, 0) + RECEIPT_TAX;
   return `<div class="receipt">
-    <div class="head">FRESHWAY MARKET #214<br>10/10/2026 13:42</div>
+    <div class="head">FRESH MART #1042<br>10/10/2026 13:42</div>
     ${RECEIPT.map(r => `<div class="r ${highlight ? (r.match ? "hit" : "extra") : ""}"><span>${r.text}</span><span>${r.price.toFixed(2)}</span></div>`).join("")}
     <div class="r"><span>TAX</span><span>${RECEIPT_TAX.toFixed(2)}</span></div>
-    <div class="r" style="margin-top:6px;font-weight:500"><span>TOTAL</span><span>${total.toFixed(2)}</span></div>
+    <div class="r" style="margin-top:6px;font-weight:600"><span>TOTAL</span><span>${total.toFixed(2)}</span></div>
   </div>`;
 }
 
+const G_ICON = { photo: ico("camera"), barcode: ico("barcode"), paste: ico("clipboard-text") };
+const G_STATE = { missed: ico("minus-circle"), extra: ico("plus-circle"), got: ico("check-circle-fill") };
 const METHODS = {
   photo:   { title: "Photo of receipt", text: "Read on your phone. Nothing is uploaded.", busy: "Reading the receipt photo" },
   barcode: { title: "Scan barcodes",    text: "Scan each product's barcode to add it.",  busy: "Looking up product barcodes" },
@@ -379,152 +624,163 @@ const METHODS = {
 const groceryApp = {
   id: "grocery",
   name: "Grocery Check",
-  tagline: "Make your grocery list, then scan the receipt to see what you forgot and what extra you bought.",
-  platforms: ["iOS", "Android"],
+  navName: "Grocery Check",
+  color: "#1F7A4D",
+  monogram: "G",
+  short: "Compare your shopping list with the receipt: what you forgot, and what extra you bought.",
+  tagline: "Make your grocery list, then add the receipt to see what you forgot and what extra you bought.",
+  platforms: [{ label: "iOS", icon: "apple-logo" }, { label: "Android", icon: "android-logo" }],
   status: "Working prototype",
-  problem: "You walk out of the store and realise you forgot the spinach, and the bill is higher than planned because a few things jumped into the cart. Nothing tells you either until it is too late.",
+  layout: "split",
+  problem: "You get home and realise you forgot the spinach, and the bill is higher than planned because a few things jumped into the cart. Nothing tells you either until it's too late.",
   features: [
-    { title: "Your list, with expected prices", text: "Add items and quantities with an optional price, so the app knows roughly what the trip should cost." },
+    { title: "Your list, with expected prices", text: "Add items and quantities with an optional price, so the app knows roughly what the shop should cost." },
     { title: "Photo of the receipt", text: "Snap the paper receipt and it is read on your phone. Nothing is uploaded." },
-    { title: "Barcodes or pasted text", text: "Scan product barcodes, paste an e-receipt from email, or type items in by hand. Mix them however you like." },
-    { title: "Receipt shorthand understood", text: "Lines like \"CHKN BRST BNLS\" are matched to \"chicken breast\" automatically, and any match can be fixed with a tap." },
-    { title: "Missed and extra report", text: "See the items you missed, the items that were not on the list, and how much those extras added to the bill." },
+    { title: "Barcodes or pasted text", text: "Scan product barcodes, paste an e-receipt from email, or type items in by hand." },
+    { title: "Receipt shorthand understood", text: "\"CHKN BRST BNLS\" is matched to \"chicken breast\" automatically, and any match can be fixed with a tap." },
+    { title: "Missed and extra, with the cost", text: "See what you missed, what wasn't on the list, and how much those extras added to the bill." },
   ],
   how: [
     "Make a list at home.",
     "Shop as usual.",
-    "Tap Check receipt, then add the receipt by photo, barcodes or pasted text.",
-    "Get the trip check: what you missed, what was extra, and what it cost.",
+    "Tap Check receipt and add the receipt by photo, barcodes or pasted text.",
+    "Read the trip check: what you missed, what was extra, and what it cost.",
   ],
   notes: [
     "Lists and trips stay on the phone. The only thing sent anywhere is a barcode lookup to Open Food Facts, a free public product database.",
-    "Most printed receipt barcodes only hold a transaction number, not the items, so the receipt photo is the main way in.",
-    "A web version exists for trying the sample trip and pasted text. Photo reading only works in the installed app.",
+    "Most printed receipt barcodes only hold a transaction number, not the items, so the photo is the main way in.",
+    "Light and dark mode follow the phone's setting.",
   ],
   screenshots: [
-    { src: "img/grocery-results.png",       caption: "The trip check: 2 missed, 3 extra items adding $13.78.", kind: "phone" },
-    { src: "img/grocery-list.png",          caption: "Building the list with expected prices.", kind: "phone" },
-    { src: "img/grocery-receipt-items.png", caption: "Adding what you bought: photo, barcodes or pasted text.", kind: "phone" },
-    { src: "img/grocery-home.png",          caption: "Home: your lists and past trips.", kind: "phone" },
+    { src: "img/grocery-results.webp",       dark: "img/grocery-results-dark.webp",       caption: "The trip check: 2 missed, 3 extra items adding $13.78.", kind: "phone" },
+    { src: "img/grocery-list.webp",          dark: "img/grocery-list-dark.webp",          caption: "Building the list, with optional expected prices.", kind: "phone" },
+    { src: "img/grocery-receipt-items.webp", dark: "img/grocery-receipt-items-dark.webp", caption: "Adding what you bought: photo, barcodes or pasted text.", kind: "phone" },
+    { src: "img/grocery-home.webp",          dark: "img/grocery-home-dark.webp",          caption: "Home: your lists and past trips.", kind: "phone" },
   ],
   demo: {
     frame: "phone",
-    init: () => ({ method: null, scanning: false, scanned: false }),
+    init: () => ({ method: null, scanning: false }),
     steps: [
       {
         title: "Make the list",
-        caption: "Add what you need before you leave. Expected prices are optional but let the app tell you what the trip should cost.",
-        render: s => {
+        caption: "Add what you need before you leave. Expected prices are optional but let the app say what the shop should cost.",
+        render: () => {
           const est = GROCERY_LIST.reduce((t, i) => t + i.est, 0);
           return `<div class="scr-title">Weekly shop</div>
-          <div class="scr-sub">${GROCERY_LIST.length} items · about ${money(est)}</div>
-          <div class="list">${GROCERY_LIST.map(i => `<div class="item"><span class="box"></span><span class="nm">${i.name}</span><span class="price">${money(i.est)}</span></div>`).join("")}</div>`;
+          <div class="scr-sub">${GROCERY_LIST.length} items, about ${money(est)}</div>
+          <div class="g-list">${GROCERY_LIST.map(i => `<div class="g-item"><span>${i.name}<small>about ${money(i.est)} each</small></span><span class="g-price">×1</span></div>`).join("")}</div>`;
         },
       },
       {
         title: "Add the receipt",
-        caption: "After checkout, tap Check receipt and choose how to add what you bought. Pick one to watch the app match each line to your list.",
+        caption: "After checkout, tap Check receipt and choose how to add what you bought. Pick one to watch each line get matched to your list.",
         on: {
           method: (s, api, el) => {
-            api.set({ method: el.dataset.m, scanning: true, scanned: false });
-            setTimeout(() => api.set({ scanning: false, scanned: true }), 1500);
+            api.set({ method: el.dataset.m, scanning: true });
+            setTimeout(() => api.set({ scanning: false }), 1500);
           },
-          rescan: (s, api) => api.set({ method: null, scanning: false, scanned: false }),
+          rescan: (s, api) => api.set({ method: null, scanning: false }),
         },
         render: s => {
           if (!s.method) return `<div class="scr-title">What you bought</div>
             <div class="scr-sub">Use any mix of these.</div>
-            ${Object.entries(METHODS).map(([k, m]) => `<button class="choice" data-act="method" data-m="${k}"><b>${m.title}</b><span>${m.text}</span></button>`).join("")}`;
+            ${Object.entries(METHODS).map(([k, m]) => `<button class="g-choice" data-act="method" data-m="${k}">${G_ICON[k]}<span><b>${m.title}</b><span>${m.text}</span></span></button>`).join("")}`;
           if (s.scanning) return `<div class="scr-title">${METHODS[s.method].busy}…</div>
             <div class="viewfinder">${receiptHTML(false)}<div class="scanline"></div></div>`;
           const c = groceryCompare();
           return `<div class="scr-title">Receipt matched</div>
-            <div><span class="pill">${c.got.length} from your list · ${c.extras.length} extra</span></div>
+            <div><span class="g-pill">${c.got.length} from your list, ${c.extras.length} extra</span></div>
             <div class="viewfinder">${receiptHTML(true)}</div>
-            <button class="choice" data-act="rescan" style="text-align:center"><b>Try another way</b></button>`;
+            <button class="g-btn" data-act="rescan">Try another way</button>`;
         },
       },
       {
         title: "See what you missed",
-        caption: "The trip check shows what never made it into the cart, what came home that was not on the list, and how much the extras cost you.",
-        render: s => {
+        caption: "The trip check shows what never made it into the cart, what came home that wasn't on the list, and what the extras cost you.",
+        render: () => {
           const c = groceryCompare();
           const pct = Math.round(c.extraTotal / c.total * 100);
           return `<div class="scr-title">Weekly shop</div>
-          <div class="scr-sub">10/10/2026 · ${money(c.total)} spent</div>
-          <div class="sum-card"><span>${c.extras.length} extra items</span><div class="big">+${money(c.extraTotal)}</div><span>${pct}% of your bill · ${c.missed.length} missed, about ${money(c.missedTotal)} not bought</span></div>
-          <div class="grp missed"><h4>You missed · ${c.missed.length}</h4>${c.missed.map(i => `<div class="line"><span>${i.name}</span><span class="price">${money(i.est)}</span></div>`).join("")}</div>
-          <div class="grp extra"><h4>Not on your list · ${c.extras.length}</h4>${c.extras.map(r => `<div class="line"><span>${r.label}</span><span class="price">${money(r.price)}</span></div>`).join("")}</div>
-          <div class="grp diff"><h4>Got from your list · ${c.got.length}</h4>${c.got.map(g => `<div class="line"><span>${g.item.name}</span><span class="price">${money(g.price)}</span></div>`).join("")}</div>`;
+          <div class="scr-sub">10/10/2026: 8 items, ${money(c.total)} spent</div>
+          <div class="g-stats">
+            <div class="g-stat missed"><b>${c.missed.length}</b><span>missed</span><small>about ${money(c.missedTotal)} not bought</small></div>
+            <div class="g-stat extra"><b>+${money(c.extraTotal)}</b><span>${c.extras.length} extra items</span><small>${pct}% of your bill</small></div>
+          </div>
+          <div class="g-group"><h4>You missed</h4>${c.missed.map(i => `<div class="g-line missed">${G_STATE.missed}<span class="nm">${i.name}</span><span class="g-price">${money(i.est)}</span></div>`).join("")}</div>
+          <div class="g-group"><h4>Not on your list <span style="color:var(--g-extra)">+${money(c.extraTotal)}</span></h4>${c.extras.map(r => `<div class="g-line extra">${G_STATE.extra}<span class="nm">${r.label}</span><span class="g-price">${money(r.price)}</span></div>`).join("")}</div>
+          <div class="g-group"><h4>Got from your list</h4>${c.got.map(g => `<div class="g-line got">${G_STATE.got}<span class="nm">${g.item.name}</span><span class="g-price">${money(g.price)}</span></div>`).join("")}</div>`;
         },
       },
     ],
   },
 };
 
-/* ---------- App 2: Claude account switcher for Windows ---------- */
+/* ---------- App 2: Claude Account Switcher (Windows) ---------- */
 const ACCOUNTS = [
-  { id: "work",     name: "Work",     color: "#11865f" },
-  { id: "personal", name: "Personal", color: "#2443d6" },
+  { id: "work",     name: "Work",     color: "#107C41" },
+  { id: "personal", name: "Personal", color: "#0F6CBD" },
 ];
 const acct = id => ACCOUNTS.find(a => a.id === id);
 const LAUNCH = {
-  vscode: { ctx: "Claude Code is starting in VS Code", title: "widgetdeck — Visual Studio Code" },
-  app:    { ctx: "Opening the Claude app", title: "Claude" },
+  vscode: { who: "Claude Code", ctx: "Claude Code is starting in VS Code", title: "showcase.ts - widgetdeck - Visual Studio Code" },
+  app:    { who: "the Claude app", ctx: "Opening the Claude app", title: "Claude" },
 };
 
 function trayMenu(s) {
   const a = acct(s.account || "work");
   return `<div class="popup corner" role="menu" aria-label="Tray menu">
-    <div class="ctx" style="margin-top:0">Claude account: ${a.name}</div>
-    ${ACCOUNTS.map(x => `<button class="acct ${x.id === a.id ? "sel" : ""}" data-act="switchTo" data-id="${x.id}">
-      <span class="av" style="background:${x.color}">${x.name[0]}</span><span><b>${x.name}</b></span><span class="key">${x.id === a.id ? "✓" : ""}</span></button>`).join("")}
-    <div class="ctx" style="margin-top:0">✓ Bring recent conversations when switching</div>
+    <div class="ctx">Claude account: ${a.name}</div>
+    ${ACCOUNTS.map(x => `<button class="acct ${x.id === a.id ? "sel" : ""}" data-act="switchTo" data-id="${x.id}" role="menuitemradio" aria-checked="${x.id === a.id}">
+      <span class="av" style="background:${x.color}">${x.name[0]}</span><b>${x.name}</b><span class="tick">${x.id === a.id ? "✓" : ""}</span></button>`).join("")}
+    <div class="ctx">✓ Bring recent conversations when switching</div>
   </div>`;
 }
 function workWindow(s) {
   const L = LAUNCH[s.launch || "vscode"], a = acct(s.account || "work");
   const body = s.launch === "app"
-    ? `<div style="font-family:var(--f-body);font-size:13px;color:#ddd">Good afternoon.<br><span style="color:#888">Signed in as ${a.name}</span></div>`
-    : `<span style="color:#6a9955">// src/showcase.ts</span><br><span style="color:#c586c0">export const</span> apps = loadApps();<br><br><span style="color:#888">Claude Code</span> · account: <span style="color:#9cdcfe">${a.name}</span>`;
-  return `<div class="win"><div class="win-title"><span>●●●</span>${L.title}</div>
-    <div class="win-body">${body}</div></div>`;
+    ? `<div style="font-family:var(--f-sans);font-size:13px;color:#DDD">Good afternoon.<br><span style="color:#999">Signed in as ${a.name}</span></div>`
+    : `<span style="color:#6A9955">// src/showcase.ts</span><br><span style="color:#C586C0">export const</span> apps = loadApps();<br><br><span style="color:#999">Claude Code, account:</span> <span style="color:#9CDCFE">${a.name}</span>`;
+  return `<div class="win"><div class="win-title">${L.title}</div><div class="win-body">${body}</div></div>`;
 }
 function taskbar(s) {
   const a = s.account ? acct(s.account) : null;
-  return `<div class="taskbar"><div class="apps"><span class="tb">⊞</span><span class="tb">VS</span><span class="tb">C</span></div>
-    <button class="tray-btn" data-act="tray" aria-label="Claude account tray icon"><span style="width:8px;height:8px;border-radius:50%;background:${a ? a.color : "#888"}"></span>${a ? a.name : "Claude account"}</button></div>`;
+  return `<div class="taskbar"><div class="apps"><span class="tb">VS</span><span class="tb">C</span></div>
+    <button class="tray-btn" data-act="tray" aria-label="Claude account tray icon"><img src="img/switcher-icon.png" alt="">${a ? a.name : "Claude account"}</button></div>`;
 }
 
 const switcherApp = {
   id: "account-switcher",
   name: "Claude Account Switcher",
+  navName: "Account Switcher",
   icon: "img/switcher-icon.png",
+  color: "#D97757",
+  short: "Choose which Claude account starts each time, and switch from the tray.",
   tagline: "Pick which Claude account to use every time Claude Code or the Claude app opens, and switch any time.",
-  platforms: ["Windows x64", "Windows ARM64"],
+  platforms: [{ label: "Windows x64", icon: "windows-logo" }, { label: "Windows ARM64", icon: "windows-logo" }],
   status: "Working first version",
-  problem: "If you have more than one Claude account, like work and personal, it is easy to start on the wrong one. Switching usually means signing out and back in, and you lose your place when one account runs out of usage.",
+  layout: "wide",
+  problem: "With more than one Claude account, like work and personal, it's easy to start on the wrong one. Switching usually means signing out and back in, and you lose your place when one account runs out of usage.",
   features: [
     { title: "Popup on launch", text: "When Claude Code starts in VS Code or you open the Claude app, a small popup asks which account to use." },
     { title: "Tray icon", text: "Shows the account in use and switches to another with one click." },
-    { title: "Claude app as any account", text: "Open the Claude app as whichever account you want, even two side by side." },
-    { title: "Conversations come along", text: "Recent conversations are carried over when you switch, so you can move one to another account when the first runs out of usage." },
+    { title: "The Claude app as any account", text: "Open the Claude app as whichever account you want, even two side by side." },
+    { title: "Conversations come along", text: "Recent conversations carry over when you switch, so one can move to another account when the first runs out of usage." },
     { title: "Never touches your sign-in", text: "No passwords or tokens are stored or copied. Each account gets its own folder and Claude signs in there itself." },
   ],
   how: [
     "Install it once. It hooks into the Claude Code extension in VS Code and adds a Claude shortcut that asks first.",
     "Start Claude Code or open the Claude app, and pick an account in the popup.",
     "Switch any time from the tray icon. New conversations use the new account straight away.",
-    "To move the current VS Code conversation over, reload the window and carry on.",
+    "To move the open VS Code conversation over, reload the window and carry on.",
   ],
   notes: [
-    "A conversation that is already open cannot change accounts in place. The switch applies to the next conversation, or to the current one after a VS Code reload.",
+    "A conversation that is already open can't change accounts in place. The switch applies to the next conversation, or to the current one after a VS Code reload.",
     "Tick \"Don't ask again\" to stop the popup and always use the active account.",
-    "The app is not code-signed yet, so Windows may show a SmartScreen warning the first time.",
+    "The app isn't code-signed yet, so Windows may show a SmartScreen warning the first time.",
   ],
   screenshots: [
-    { src: "img/switcher-picker.png",    caption: "The popup that appears when Claude Code starts.", kind: "window" },
-    { src: "img/switcher-tray-menu.png", caption: "The tray menu: switch accounts, open the Claude app as any account, and settings.", kind: "window" },
+    { src: "img/switcher-picker.webp",    caption: "The account picker on Windows 11, opened from the tray icon.", kind: "dialog" },
+    { src: "img/switcher-tray-menu.webp", caption: "The tray menu: switch accounts, open the Claude app as any account, and settings.", kind: "dialog" },
   ],
   demo: {
     frame: "desktop",
@@ -536,15 +792,15 @@ const switcherApp = {
         on: { launch: (s, api, el) => { api.set({ launch: el.dataset.l }); api.go(1); } },
         render: s => `<div class="desk-area">
             <div class="launchers">
-              <button class="launch" data-act="launch" data-l="vscode"><span class="ico" style="background:#2443d6">VS</span><b>Claude Code in VS Code</b><span>C:\\code\\widgetdeck</span></button>
-              <button class="launch" data-act="launch" data-l="app"><span class="ico" style="background:#d97757">C</span><b>Claude (choose account)</b><span>Start menu shortcut</span></button>
+              <button class="launch" data-act="launch" data-l="vscode"><span class="ico" style="background:#0F6CBD">VS</span><b>Claude Code in VS Code</b><span>C:\\code\\widgetdeck</span></button>
+              <button class="launch" data-act="launch" data-l="app"><span class="ico" style="background:#D97757">C</span><b>Claude (choose account)</b><span>Start menu shortcut</span></button>
             </div>
-            <p class="hint" style="margin-top:14px">The switcher waits in the tray.</p>
+            <p class="hint">The switcher waits in the tray.</p>
           </div>${taskbar(s)}`,
       },
       {
         title: "Pick the account",
-        caption: "The popup appears before Claude starts. Choose an account and continue. A new account asks you to sign in the first time it is used.",
+        caption: "The popup appears before Claude starts. Choose an account and continue. A new account asks you to sign in the first time it's used.",
         on: {
           pick: (s, api, el) => api.set({ pick: el.dataset.id }),
           dontAsk: (s, api) => api.set({ dontAsk: !s.dontAsk }),
@@ -553,26 +809,26 @@ const switcherApp = {
         render: s => {
           const L = LAUNCH[s.launch || "vscode"];
           return `<div class="desk-area">
-            <div class="popup" role="dialog" aria-label="Choose Claude account">
-              <h4>Which account should ${s.launch === "app" ? "the Claude app" : "Claude Code"} use?</h4>
+            <div class="popup" role="dialog" aria-label="Choose a Claude account">
+              <h4>Which account should ${L.who} use?</h4>
               <div class="ctx">${L.ctx}</div>
-              ${ACCOUNTS.map(a => `<button class="acct ${s.pick === a.id ? "sel" : ""}" data-act="pick" data-id="${a.id}">
-                <span class="av" style="background:${a.color}">${a.name[0]}</span><span><b>${a.name}</b></span><span></span></button>`).join("")}
-              <label><input type="checkbox" id="dont-ask" data-act="dontAsk" ${s.dontAsk ? "checked" : ""}> Don't ask again (switch any time from the tray icon)</label>
+              ${ACCOUNTS.map(a => `<button class="acct ${s.pick === a.id ? "sel" : ""}" data-act="pick" data-id="${a.id}" aria-pressed="${s.pick === a.id}">
+                <span class="av" style="background:${a.color}">${a.name[0]}</span><b>${a.name}</b><span></span></button>`).join("")}
+              <label><input type="checkbox" data-act="dontAsk" ${s.dontAsk ? "checked" : ""}> Don't ask again (switch any time from the tray icon)</label>
               <button class="go" data-act="confirm">Use this account</button>
             </div></div>${taskbar(s)}`;
         },
       },
       {
         title: "Switch from the tray",
-        caption: "You are working. Click the tray icon and pick the other account. New conversations use it straight away, and recent ones come along.",
+        caption: "You're working. Click the tray icon and pick the other account. New conversations use it straight away, and recent ones come along.",
         on: {
           tray: (s, api) => api.set({ tray: !s.tray, toast: null }),
-          switchTo: (s, api, el) => api.set({ account: el.dataset.id, tray: false, toast: `Switched to ${acct(el.dataset.id).name}. Reload the window to continue this conversation there.` }),
+          switchTo: (s, api, el) => api.set({ account: el.dataset.id, tray: false, toast: `Now using ${acct(el.dataset.id).name}. Reload the window to move this conversation over.` }),
         },
         render: s => `<div class="desk-area">${workWindow(s)}
             ${s.tray ? trayMenu(s) : ""}
-            ${s.toast ? `<div class="toast">${s.toast}</div>` : ""}
+            ${s.toast ? `<div class="toast" role="status">${s.toast}</div>` : ""}
           </div>${taskbar(s)}`,
       },
       {
@@ -580,8 +836,8 @@ const switcherApp = {
         caption: "From the tray, open the Claude app as either account. Each account has its own folder, so both can be open at once.",
         render: s => `<div class="desk-area">
             ${ACCOUNTS.map((a, i) => `<div class="win" style="inset:${12 + i * 34}px ${12 + (1 - i) * 90}px ${12 + (1 - i) * 34}px ${12 + i * 90}px">
-              <div class="win-title"><span style="width:8px;height:8px;border-radius:50%;background:${a.color};display:inline-block"></span>Claude · ${a.name}</div>
-              <div class="win-body" style="font-family:var(--f-body)">Signed in as ${a.name}<br><span style="color:#888">How can I help you today?</span></div></div>`).join("")}
+              <div class="win-title"><span class="dot" style="background:${a.color}"></span>Claude, ${a.name}</div>
+              <div class="win-body" style="font-family:var(--f-sans)">Signed in as ${a.name}<br><span style="color:#999">How can I help you today?</span></div></div>`).join("")}
           </div>${taskbar(s)}`,
       },
     ],
@@ -591,37 +847,41 @@ const switcherApp = {
 /* ---------- App 3: Cloud Transfer ---------- */
 const CT_SOURCE = [
   { id: "music",  name: "Music",          kind: "folder", size: "386 MB" },
-  { id: "photos", name: "Photos",         kind: "folder", size: "142 MB" },
-  { id: "work",   name: "Work",           kind: "folder", size: "244 MB" },
+  { id: "photos", name: "Photos",         kind: "folder", size: "384 MB" },
+  { id: "work",   name: "Work",           kind: "folder", size: "2.4 MB" },
   { id: "notes",  name: "Notes",          kind: "gdoc",   size: "Google file" },
   { id: "resume", name: "Resume.docx",    kind: "file",   size: "205 KB" },
   { id: "taxes",  name: "Taxes 2025.pdf", kind: "file",   size: "2.4 MB" },
 ];
 const CT_DEST = ["Top level", "Documents", "Pictures", "From Google Drive"];
-const CT_TOTAL_MB = 775;
+const CT_TOTAL_MB = 770;
+const CT_FOUND = "Found 9 files (770 MB).";
 let ctTimer = null;
 
 function ctShell(inner) {
   return `<div class="desk-area"><div class="ct-win">
     <div class="ct-side"><div class="ct-brand"><img src="img/transfer-icon.png" alt="">Cloud Transfer</div>
-      <span>Transfers</span><span class="on">New transfer</span><span>Accounts</span></div>
+      <span>Transfers</span><span class="on">New transfer</span><span>Accounts</span><span>Settings</span></div>
     <div class="ct-main">${inner}</div></div></div>`;
 }
 function ctSteps(n) {
   return `<div class="ct-steps">${["From", "To", "Review"].map((t, i) => `<span class="${i < n ? "done" : i === n ? "now" : ""}"><i>${i < n ? "✓" : i + 1}</i>${t}</span>`).join("")}</div>`;
 }
-function ctTick(api, get) {
-  clearInterval(ctTimer);
+function ctStop() { clearInterval(ctTimer); ctTimer = null; }
+function ctStart(api) {
+  ctStop();
   ctTimer = setInterval(() => {
-    const s = get();
+    const s = api.get();
     if (s.paused) return;
-    if (s.mb >= CT_TOTAL_MB) { clearInterval(ctTimer); return; }
+    if (s.mb >= CT_TOTAL_MB) return ctStop();
     const notes = [...s.notes];
-    let wait = s.wait;
-    if (s.mb >= 260 && !s.slowed) { notes.unshift("OneDrive asked us to slow down, so we paused for 3s and now move 1 file at a time. Nothing for you to do."); api.set({ slowed: true, wait: 6, notes }); return; }
-    if (wait > 0) { api.set({ wait: wait - 1 }); return; }
+    if (s.mb >= 260 && !s.slowed) {
+      notes.unshift("OneDrive asked us to slow down, so we paused for 3s and now move 1 file at a time. Nothing for you to do.");
+      return api.set({ slowed: true, wait: 6, notes });
+    }
+    if (s.wait > 0) return api.set({ wait: s.wait - 1 });
     const mb = Math.min(CT_TOTAL_MB, s.mb + (s.slowed ? 22 : 34));
-    if (mb >= CT_TOTAL_MB) notes.unshift("Done. 16 files copied and checked, Notes saved as Notes.docx, 1 file renamed, 1 Google Form skipped because it can't be copied.");
+    if (mb >= CT_TOTAL_MB) notes.unshift("Done. 9 files copied and checked, and Notes saved as Notes.docx. One name was adjusted for OneDrive.");
     api.set({ mb, notes });
   }, 260);
 }
@@ -629,17 +889,21 @@ function ctTick(api, get) {
 const transferApp = {
   id: "cloud-transfer",
   name: "Cloud Transfer",
+  navName: "Cloud Transfer",
   icon: "img/transfer-icon.png",
+  color: "#2F4BFF",
+  short: "Copy files between Google Drive, OneDrive and iCloud Drive, straight from cloud to cloud.",
   tagline: "Move your files between Google Drive, OneDrive and iCloud Drive without downloading them first.",
-  platforms: ["Windows", "iPhone", "Android"],
+  platforms: [{ label: "Windows", icon: "windows-logo" }, { label: "iPhone", icon: "apple-logo" }, { label: "Android", icon: "android-logo" }],
   status: "Working prototype",
-  problem: "Switching clouds usually means downloading everything to your computer and uploading it again. That needs free disk space and a computer left on for hours, and along the way you hit limits nobody explains: daily upload caps, \"rate limit exceeded\" errors, Google Docs that won't download, and transfers that fail halfway and start over.",
+  layout: "split-reverse",
+  problem: "Switching clouds usually means downloading everything and uploading it again. That needs free disk space and a computer left on for hours, and along the way come limits nobody explains: daily upload caps, \"rate limit exceeded\" errors, Google Docs that won't download, and transfers that fail halfway.",
   features: [
-    { title: "Cloud to cloud", text: "Copy files and whole folders between Google Drive, OneDrive and iCloud Drive. Nothing is downloaded to your device; on Windows files only pass through memory." },
-    { title: "Limits handled for you", text: "When Google or Microsoft ask to slow down, or Google's 750 GB-a-day upload cap is reached, the app waits and carries on by itself, with a plain-English note." },
+    { title: "Cloud to cloud", text: "Copy files and whole folders between Google Drive, OneDrive and iCloud Drive. Nothing is saved to your device." },
+    { title: "Limits handled for you", text: "When a provider asks to slow down, or Google's 750 GB-a-day upload cap is reached, the app waits and carries on with a plain-English note." },
     { title: "Picks up where it left off", text: "Big files move in pieces, so an interrupted transfer resumes from the last piece, even after a restart." },
     { title: "Google files become Office files", text: "Google Docs, Sheets and Slides arrive as Word, Excel and PowerPoint files." },
-    { title: "Names fixed, files checked", text: "Names the other cloud doesn't allow are fixed and shown to you, and each file is checked after copying." },
+    { title: "Names fixed, files checked", text: "Names the other cloud doesn't allow are adjusted and shown to you, and each file is checked after copying." },
   ],
   how: [
     "Connect your accounts: sign in to Google Drive and OneDrive, and use iCloud Drive through iCloud for Windows.",
@@ -648,39 +912,39 @@ const transferApp = {
     "Watch it go, or close the window. The transfer keeps running from the tray.",
   ],
   notes: [
-    "A demo mode with sample accounts lets anyone try it without signing in.",
+    "A demo mode with sample accounts lets anyone try every step without signing in.",
     "iCloud Drive works on Windows through Apple's iCloud for Windows. It is coming to iPhone and isn't possible on Android, because Apple offers no way in.",
-    "Some work or school Microsoft accounts need an admin to approve the app.",
-    "Until Google approves the app, Google sign-in shows an \"unverified app\" warning.",
+    "Some work or school Microsoft accounts need an admin to approve the app, and until Google approves it, Google sign-in shows an \"unverified app\" warning.",
   ],
   screenshots: [
-    { src: "img/transfer-progress.png",   caption: "A transfer in progress. OneDrive asked to slow down, and the app handled it.", kind: "window" },
-    { src: "img/transfer-pick-files.png", caption: "Step 1 of the wizard: pick files and folders from Google Drive.", kind: "window" },
-    { src: "img/transfer-review.png",     caption: "Step 3: review options like converting Google Docs and checking each file.", kind: "window" },
-    { src: "img/transfer-home.png",       caption: "All transfers in one place.", kind: "window" },
-    { src: "img/transfer-accounts.png",   caption: "Connected accounts: Google Drive, OneDrive and iCloud Drive.", kind: "window" },
-    { src: "img/transfer-phone.png",      caption: "The same app on a phone, where the transfer runs on the server.", kind: "phone" },
+    { src: "img/transfer-progress.webp",   dark: "img/transfer-progress-dark.webp",   caption: "A transfer in progress. OneDrive asked to slow down, and the app handled it.", kind: "window" },
+    { src: "img/transfer-pick-files.webp", dark: "img/transfer-pick-files-dark.webp", caption: "Step 1: pick files and folders from Google Drive.", kind: "window" },
+    { src: "img/transfer-review.webp",     dark: "img/transfer-review-dark.webp",     caption: "Step 3: review options like converting Google Docs and checking each file.", kind: "window" },
+    { src: "img/transfer-home.webp",       dark: "img/transfer-home-dark.webp",       caption: "All transfers in one place.", kind: "window" },
+    { src: "img/transfer-accounts.webp",   dark: "img/transfer-accounts-dark.webp",   caption: "Connected accounts in demo mode: Google Drive, OneDrive and iCloud Drive.", kind: "window" },
+    { src: "img/transfer-phone.webp",      dark: "img/transfer-phone-dark.webp",      caption: "The same app on a phone, where the transfer runs on the server.", kind: "phone" },
   ],
   demo: {
     frame: "desktop",
-    init: () => { clearInterval(ctTimer); return { picked: { music: true, photos: true, notes: true }, dest: "From Google Drive", convert: true, verify: true, mb: 0, slowed: false, wait: 0, paused: false, notes: ["Found 17 files (775 MB), 1 can't be copied."] }; },
+    init: () => { ctStop(); return { picked: { music: true, photos: true, notes: true }, dest: "From Google Drive", convert: true, verify: true, mb: 0, slowed: false, wait: 0, paused: false, notes: [CT_FOUND] }; },
+    onStep: (i) => { if (i !== 3) ctStop(); },
     steps: [
       {
         title: "Pick what to copy",
         caption: "Choose the cloud to copy from, then tick files and folders. Try ticking a few.",
         on: { pick: (s, api, el) => api.set({ picked: { ...s.picked, [el.dataset.id]: !s.picked[el.dataset.id] } }) },
         render: s => ctShell(`<div class="ct-h">New transfer</div>${ctSteps(0)}
-          <div class="ct-from"><span class="sel">G&nbsp; Google Drive</span><span>OneDrive</span><span>iCloud Drive</span></div>
-          <div class="ct-list">${CT_SOURCE.map(f => `<button class="ct-row" data-act="pick" data-id="${f.id}"><span class="ct-box ${s.picked[f.id] ? "on" : ""}">${s.picked[f.id] ? "✓" : ""}</span><span class="ct-ico ${f.kind}"></span><span class="ct-nm">${f.name}</span><span class="ct-sz">${f.size}</span></button>`).join("")}</div>
+          <div class="ct-from"><span class="sel">Google Drive</span><span>OneDrive</span><span>iCloud Drive</span></div>
+          <div class="ct-list">${CT_SOURCE.map(f => `<button class="ct-row" data-act="pick" data-id="${f.id}" aria-pressed="${!!s.picked[f.id]}"><span class="ct-box ${s.picked[f.id] ? "on" : ""}">${s.picked[f.id] ? "✓" : ""}</span><span class="ct-ico ${f.kind}"></span><span class="ct-nm">${f.name}</span><span class="ct-sz">${f.size}</span></button>`).join("")}</div>
           <div class="ct-foot">${Object.values(s.picked).filter(Boolean).length} selected</div>`),
       },
       {
         title: "Pick where it goes",
-        caption: "Choose the destination cloud and folder. Here it is a OneDrive folder.",
+        caption: "Choose the destination cloud and folder. Here it's a OneDrive folder.",
         on: { dest: (s, api, el) => api.set({ dest: el.dataset.d }) },
         render: s => ctShell(`<div class="ct-h">New transfer</div>${ctSteps(1)}
           <div class="ct-from"><span>Google Drive</span><span class="sel">OneDrive</span><span>iCloud Drive</span></div>
-          <div class="ct-list">${CT_DEST.map(d => `<button class="ct-row" data-act="dest" data-d="${d}"><span class="ct-radio ${s.dest === d ? "on" : ""}"></span><span class="ct-ico folder"></span><span class="ct-nm">${d}</span><span></span></button>`).join("")}</div>`),
+          <div class="ct-list">${CT_DEST.map(d => `<button class="ct-row" data-act="dest" data-d="${d}" aria-pressed="${s.dest === d}"><span class="ct-radio ${s.dest === d ? "on" : ""}"></span><span class="ct-ico folder"></span><span class="ct-nm">${d}</span><span></span></button>`).join("")}</div>`),
       },
       {
         title: "Review and start",
@@ -692,8 +956,8 @@ const transferApp = {
         },
         render: s => ctShell(`<div class="ct-h">New transfer</div>${ctSteps(2)}
           <div class="ct-card"><b>${CT_SOURCE.filter(f => s.picked[f.id]).map(f => f.name).join(", ") || "Nothing selected"}</b><span>Google Drive → OneDrive / ${s.dest}</span></div>
-          <button class="ct-opt" data-act="convert"><span class="ct-box ${s.convert ? "on" : ""}">${s.convert ? "✓" : ""}</span>Turn Google Docs, Sheets and Slides into Office files</button>
-          <button class="ct-opt" data-act="verify"><span class="ct-box ${s.verify ? "on" : ""}">${s.verify ? "✓" : ""}</span>Check each file after copying</button>
+          <button class="ct-opt" data-act="convert" aria-pressed="${s.convert}"><span class="ct-box ${s.convert ? "on" : ""}">${s.convert ? "✓" : ""}</span>Turn Google Docs, Sheets and Slides into Office files</button>
+          <button class="ct-opt" data-act="verify" aria-pressed="${s.verify}"><span class="ct-box ${s.verify ? "on" : ""}">${s.verify ? "✓" : ""}</span>Check each file after copying</button>
           <div class="ct-safe">Files stream from one cloud to the other. Nothing is saved to your disk.</div>
           <div class="ct-foot"><button class="ct-go" data-act="start">Start transfer</button></div>`),
       },
@@ -702,10 +966,10 @@ const transferApp = {
         caption: "Progress fills up. Partway through, OneDrive asks the app to slow down, and it waits and carries on by itself. Nothing for you to do.",
         on: {
           pause: (s, api) => api.set({ paused: !s.paused }),
-          again: (s, api) => { api.set({ mb: 0, slowed: false, wait: 0, paused: false, notes: ["Found 17 files (775 MB), 1 can't be copied."] }); },
+          again: (s, api) => { api.set({ mb: 0, slowed: false, wait: 0, paused: false, notes: [CT_FOUND] }); ctStart(api); },
         },
         render: (s, api) => {
-          if (!ctTimer || s.mb === 0) setTimeout(() => ctTick(api, api.get), 0);
+          if (!ctTimer && s.mb < CT_TOTAL_MB) setTimeout(() => { if (!ctTimer) ctStart(api); }, 0);
           const pct = Math.round(s.mb / CT_TOTAL_MB * 100), done = s.mb >= CT_TOTAL_MB;
           const status = done ? "Done" : s.paused ? "Paused" : s.wait > 0 ? "Slowing down" : "Copying";
           return ctShell(`<div class="ct-h">${Object.values(s.picked).filter(Boolean).length || 1} items <small>to OneDrive</small></div>
@@ -722,108 +986,165 @@ const transferApp = {
 const APPS = [groceryApp, switcherApp, transferApp];
 
 /* ==========================================================================
-   Rendering — generic, no app-specific code below.
+   Rendering: generic, no app-specific code below.
    ========================================================================== */
+document.documentElement.classList.add("js");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+const isDark = () => {
+  const t = document.documentElement.getAttribute("data-theme");
+  return t ? t === "dark" : darkQuery.matches;
+};
+const shotSrc = sh => (isDark() && sh.dark ? sh.dark : sh.src);
+const appIcon = (a, cls = "app-icon") => a.icon
+  ? `<img class="${cls}" src="${a.icon}" width="52" height="52" alt="">`
+  : `<span class="${cls} monogram" style="background:${a.color}" aria-hidden="true">${esc(a.monogram || a.name[0])}</span>`;
+const tags = a => a.platforms.map(p => `<span class="tag">${ico(p.icon)}${esc(p.label)}</span>`).join("") + `<span class="tag tag-status">${esc(a.status)}</span>`;
 
-function renderDeck() {
-  document.getElementById("topnav").innerHTML = APPS.map(a => `<a href="#${a.id}">${esc(a.name)}</a>`).join("");
-  document.getElementById("deck").innerHTML = APPS.map((a, i) => `
-    <a class="deck-card" href="#${a.id}">
-      <div class="row"><span class="label">App ${i + 1}</span><span class="tbd">Working name</span></div>
-      <div class="title-row">${a.icon ? `<img class="app-icon" src="${a.icon}" alt="">` : ""}<h3>${esc(a.name)}</h3></div>
-      <p>${esc(a.tagline)}</p>
-      <div class="chips">${a.platforms.map(p => `<span class="chip">${esc(p)}</span>`).join("")}<span class="chip status">${esc(a.status)}</span></div>
-    </a>`).join("") + `<div class="deck-card add"><span class="label">Next</span><p>More app ideas will land here.</p></div>`;
-  document.getElementById("count").textContent = `${APPS.length} apps in progress`;
+function renderNav() {
+  document.getElementById("topnav").innerHTML = APPS.map(a => `<a href="#${a.id}">${esc(a.navName || a.name)}</a>`).join("");
+  const n = APPS.length;
+  document.getElementById("count").textContent = `${n} app${n === 1 ? "" : "s"} in progress`;
+}
+
+function renderIndex() {
+  document.getElementById("deck").innerHTML = APPS.map((a, i) => {
+    const sh = (a.screenshots || [])[0];
+    const kind = sh ? `is-${sh.kind}` : "";
+    return `<a class="tile" href="#${a.id}" data-reveal>
+      <div class="tile-head">
+        <div class="tile-title">${appIcon(a)}<h3>${esc(a.name)}</h3></div>
+        <p>${esc(a.short)}</p>
+        <div class="tile-meta">${tags(a)}</div>
+      </div>
+      ${sh ? `<div class="tile-shot ${kind}" style="--tint:color-mix(in srgb, ${a.color || "var(--accent)"} 12%, var(--surface-2))"><img data-shot="${a.id}:0" src="${shotSrc(sh)}" alt="" loading="lazy"></div>` : ""}
+      <span class="tile-go" aria-hidden="true">${ico("arrow-right")}</span>
+    </a>`;
+  }).join("");
 }
 
 function renderApps() {
-  document.getElementById("apps").innerHTML = APPS.map(a => `
-    <section class="app" id="${a.id}" aria-labelledby="${a.id}-h">
-      <div class="app-grid">
-        <div class="app-info">
-          <div class="app-head">
-            <div class="chips"><span class="tbd">Working name</span>${a.platforms.map(p => `<span class="chip">${esc(p)}</span>`).join("")}<span class="chip status">${esc(a.status)}</span></div>
-            <div class="title-row">${a.icon ? `<img class="app-icon" src="${a.icon}" alt="">` : ""}<h2 id="${a.id}-h">${esc(a.name)}</h2></div>
-            <p class="tagline">${esc(a.tagline)}</p>
-          </div>
-          <div class="block"><span class="label">The problem</span><p>${esc(a.problem)}</p></div>
-          <div class="block"><span class="label">What it does</span>
-            <ul class="features">${a.features.map(f => `<li><span><b>${esc(f.title)}.</b> ${esc(f.text)}</span></li>`).join("")}</ul></div>
-          <div class="block"><span class="label">How you use it</span>
-            <ol class="steps-list">${a.how.map(h => `<li><span>${esc(h)}</span></li>`).join("")}</ol></div>
-          ${a.notes && a.notes.length ? `<div class="open-q"><span class="label">Good to know</span>
-            <ul>${a.notes.map(q => `<li>${esc(q)}</li>`).join("")}</ul></div>` : ""}
+  document.getElementById("app-sections").innerHTML = APPS.map(a => `
+    <section class="app" id="${a.id}" data-layout="${a.layout || "split"}" aria-labelledby="${a.id}-h">
+      <div class="wrap app-grid">
+        <div class="app-head" data-reveal>
+          <div class="title-row">${appIcon(a)}<h2 id="${a.id}-h">${esc(a.name)}</h2></div>
+          <p class="lead">${esc(a.tagline)}</p>
+          <div class="meta">${tags(a)}<span class="tag">Working name</span></div>
         </div>
-        <div class="demo" data-demo="${a.id}"></div>
+        <div class="app-demo" data-reveal><div class="panel" data-demo="${a.id}"></div></div>
+        <div class="app-body">
+          <div class="block" data-reveal><h3>The problem</h3><p>${esc(a.problem)}</p></div>
+          <div class="block" data-reveal><h3>How you use it</h3><ol class="steps">${a.how.map(h => `<li><span>${esc(h)}</span></li>`).join("")}</ol></div>
+          <div class="block" data-reveal style="grid-column:1 / -1"><h3>What it does</h3>
+            <ul class="features">${a.features.map(f => `<li><b>${esc(f.title)}</b><span>${esc(f.text)}</span></li>`).join("")}</ul></div>
+          ${a.notes && a.notes.length ? `<details class="notes" data-reveal><summary>Good to know ${ico("caret-down")}</summary>
+            <ul>${a.notes.map(q => `<li>${esc(q)}</li>`).join("")}</ul></details>` : ""}
+        </div>
       </div>
     </section>`).join("");
   APPS.forEach(mountDemo);
 }
 
+const redraws = [];
 function mountDemo(app) {
   const root = document.querySelector(`[data-demo="${app.id}"]`);
   const d = app.demo;
   const shots = app.screenshots || [];
   let state = d.init(), step = 0, view = shots.length ? "shots" : "walk", shot = 0;
   const api = {
-    set(patch) { state = { ...state, ...patch }; draw(); },
-    go(i) { step = Math.max(0, Math.min(d.steps.length - 1, i)); draw(); },
+    set(patch) { state = { ...state, ...patch }; draw(false); },
+    go(i) { step = Math.max(0, Math.min(d.steps.length - 1, i)); if (d.onStep) d.onStep(step, api); draw(true); },
     get() { return state; },
   };
   function frame(inner) {
-    if (d.frame === "phone") return `<div class="phone"><div class="phone-screen"><div class="phone-notch"></div><div class="phone-status"><span>9:41</span><span>●●● ▮</span></div><div class="phone-body">${inner}</div></div></div>`;
+    if (d.frame === "phone") return `<div class="phone"><div class="phone-screen"><div class="phone-notch"></div><div class="phone-status">9:41</div><div class="phone-body">${inner}</div></div></div>`;
     return `<div class="desk"><div class="desk-screen">${inner}</div></div>`;
   }
   function tabs() {
     if (!shots.length) return "";
-    return `<div class="tabs" role="tablist">
-      <button role="tab" aria-selected="${view === "shots"}" data-view="shots">Screenshots</button>
-      <button role="tab" aria-selected="${view === "walk"}" data-view="walk">Walkthrough</button></div>`;
+    return `<div class="tabs" role="tablist" aria-label="${esc(app.name)} demo">
+      <button role="tab" aria-selected="${view === "shots"}" data-view="shots">${ico("images")}Screenshots</button>
+      <button role="tab" aria-selected="${view === "walk"}" data-view="walk">${ico("hand-pointing")}Walkthrough</button></div>`;
   }
-  function draw() {
+  function draw(fade) {
     if (view === "shots") {
       const sh = shots[shot];
-      root.innerHTML = `
-        <div class="demo-bar">${tabs()}<span class="label">${shot + 1} of ${shots.length}</span></div>
-        <div class="shot-main"><img class="${sh.kind}-shot" src="${sh.src}" alt="${esc(sh.caption)}"></div>
+      root.innerHTML = `${tabs()}
+        <div class="stage${fade ? " is-fade" : ""}" role="tabpanel"><img class="shot-${sh.kind}" src="${shotSrc(sh)}" alt="${esc(sh.caption)}"></div>
         <div class="caption"><h3>From the current build</h3><p>${esc(sh.caption)}</p></div>
-        ${shots.length > 1 ? `<div class="thumbs">${shots.map((x, i) => `<button data-shot="${i}" aria-label="${esc(x.caption)}" ${i === shot ? 'aria-current="true"' : ""}><img src="${x.src}" alt=""></button>`).join("")}</div>` : ""}`;
+        ${shots.length > 1 ? `<div class="thumbs">${shots.map((x, i) => `<button data-shot="${i}" aria-label="${esc(x.caption)}" ${i === shot ? 'aria-current="true"' : ""}><img src="${shotSrc(x)}" alt="" loading="lazy"></button>`).join("")}</div>` : ""}`;
       return;
     }
     const s = d.steps[step];
-    root.innerHTML = `
-      <div class="demo-bar">${tabs()}<span class="label">Step ${step + 1} of ${d.steps.length}</span></div>
-      <div class="dots">${d.steps.map((x, i) => `<button aria-label="Step ${i + 1}: ${esc(x.title)}" ${i === step ? 'aria-current="step"' : ""} data-nav="${i}"></button>`).join("")}</div>
-      <div class="stage">${frame(s.render(state, api))}</div>
-      <div class="caption"><h3>${esc(s.title)}</h3><p>${esc(s.caption)}</p></div>
+    root.innerHTML = `${tabs()}
+      <div class="steps-nav" aria-label="Walkthrough steps">${d.steps.map((x, i) => `<button data-nav="${i}" ${i === step ? 'aria-current="step"' : ""}>${esc(x.title)}</button>`).join("")}</div>
+      <div class="stage${fade ? " is-fade" : ""}" role="tabpanel">${frame(s.render(state, api))}</div>
+      <div class="caption" aria-live="polite"><h3>${esc(s.title)}</h3><p>${esc(s.caption)}</p></div>
       <div class="demo-nav">
-        <button class="btn" data-nav="${step - 1}" ${step === 0 ? "disabled" : ""}>Back</button>
+        <button class="btn btn-quiet" data-nav="${step - 1}" ${step === 0 ? "disabled" : ""}>${ico("arrow-left")}Back</button>
         ${step === d.steps.length - 1
-          ? `<button class="btn" data-restart>Start over</button>`
-          : `<button class="btn primary" data-nav="${step + 1}">Next</button>`}
+          ? `<button class="btn btn-quiet" data-restart>${ico("arrow-counter-clockwise")}Start over</button>`
+          : `<button class="btn btn-primary" data-nav="${step + 1}">Next ${ico("arrow-right")}</button>`}
       </div>`;
   }
   root.addEventListener("click", e => {
     const v = e.target.closest("[data-view]");
-    if (v) { view = v.dataset.view; return draw(); }
+    if (v) { view = v.dataset.view; if (view === "shots" && d.onStep) d.onStep(-1, api); return draw(true); }
     const t = e.target.closest("[data-shot]");
-    if (t) { shot = +t.dataset.shot; return draw(); }
+    if (t) { shot = +t.dataset.shot; return draw(true); }
     const nav = e.target.closest("[data-nav]");
     if (nav) return api.go(+nav.dataset.nav);
     if (e.target.closest("[data-restart]")) { state = d.init(); return api.go(0); }
     const act = e.target.closest("[data-act]");
     if (act) {
       const h = d.steps[step].on && d.steps[step].on[act.dataset.act];
-      if (h) { e.preventDefault(); h(state, api, act); }
+      if (h) { if (act.tagName !== "INPUT") e.preventDefault(); h(state, api, act); }
     }
   });
-  draw();
+  redraws.push(() => draw(false));
+  draw(false);
 }
 
-renderDeck();
+/* Theme: the toggle saves a choice; images with dark versions follow it. */
+function applyThemeImages() {
+  const t = document.documentElement.getAttribute("data-theme");
+  document.querySelectorAll("source[data-theme-src]").forEach(s => {
+    s.media = t === "dark" ? "all" : t === "light" ? "not all" : "(prefers-color-scheme: dark)";
+  });
+  document.querySelectorAll("img[data-shot]").forEach(img => {
+    const [id, i] = img.dataset.shot.split(":");
+    const sh = APPS.find(a => a.id === id).screenshots[+i];
+    img.src = shotSrc(sh);
+  });
+  redraws.forEach(f => f());
+  const btn = document.getElementById("theme");
+  btn.setAttribute("aria-label", isDark() ? "Switch to light mode" : "Switch to dark mode");
+}
+document.getElementById("theme").addEventListener("click", () => {
+  const next = isDark() ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  try { localStorage.setItem("widgetdeck-theme", next); } catch (e) {}
+  applyThemeImages();
+});
+darkQuery.addEventListener("change", () => { if (!document.documentElement.getAttribute("data-theme")) applyThemeImages(); });
+
+/* Reveal sections as they enter the viewport (no scroll listeners). */
+function reveal() {
+  const els = document.querySelectorAll("[data-reveal]");
+  if (!("IntersectionObserver" in window)) return els.forEach(el => el.classList.add("is-in"));
+  const io = new IntersectionObserver(entries => entries.forEach(en => {
+    if (en.isIntersecting) { en.target.classList.add("is-in"); io.unobserve(en.target); }
+  }), { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+  els.forEach(el => io.observe(el));
+}
+
+renderNav();
+renderIndex();
 renderApps();
+applyThemeImages();
+reveal();
+if (location.hash) { const el = document.querySelector(location.hash); if (el) el.scrollIntoView(); }
 </script>
 </body>
 </html>
