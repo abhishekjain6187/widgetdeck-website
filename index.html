@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Widgetdeck: small apps that fix everyday annoyances</title>
 <meta name="description" content="Every app AJ is building, with the problem it solves, a walkthrough you can click and real screenshots: Grocery Check, Claude Account Switcher and Cloud Transfer.">
-<link rel="canonical" href="https://widgetdeck.com/">
+<link rel="canonical" href="https://www.widgetdeck.com/">
 
 <!-- Brand assets are root-absolute so they also resolve from 404.html on any path. Page assets (img/, fonts/) are relative. -->
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -17,10 +17,10 @@
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Widgetdeck">
-<meta property="og:url" content="https://widgetdeck.com/">
+<meta property="og:url" content="https://www.widgetdeck.com/">
 <meta property="og:title" content="Widgetdeck: small apps that fix everyday annoyances">
 <meta property="og:description" content="Every app AJ is building, with the problem it solves, a walkthrough you can click and real screenshots.">
-<meta property="og:image" content="https://widgetdeck.com/og.png">
+<meta property="og:image" content="https://www.widgetdeck.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Widgetdeck: screenshots of Grocery Check, Cloud Transfer and the Claude Account Switcher dealt onto a green card table.">
@@ -132,10 +132,11 @@ h1, h2, h3 { margin: 0; text-wrap: balance; }
 h1, h2 { font-family: var(--f-display); font-stretch: 86%; font-optical-sizing: auto; font-weight: 600; letter-spacing: -.02em; line-height: 1.02; }
 h3 { font-family: var(--f-display); font-stretch: 92%; font-weight: 600; font-size: 21px; line-height: 1.2; letter-spacing: -.005em; }
 p { margin: 0; text-wrap: pretty; }
-.wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding-inline: 24px; }
+.wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding-inline: max(24px, env(safe-area-inset-left)) max(24px, env(safe-area-inset-right)); }
 .icon { width: 1em; height: 1em; flex: none; fill: currentColor; }
 .skip { position: absolute; left: 16px; top: -48px; z-index: 30; background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; text-decoration: none; }
 .skip:focus { top: 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border-radius: 999px; padding: 12px 22px; min-height: 44px; font-weight: 550; font-size: 16px; line-height: 1.2; text-decoration: none; border: 1px solid transparent; transition: transform .15s var(--ease), background-color .2s, border-color .2s, color .2s; }
 .btn:active { transform: scale(.98); }
@@ -452,7 +453,7 @@ footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2
   .details { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 767px) {
-  .wrap { padding-inline: 16px; }
+  .wrap { padding-inline: max(16px, env(safe-area-inset-left)) max(16px, env(safe-area-inset-right)); }
   .nav a { display: none; }
   .hero { padding-block: 32px 40px; }
   .hero-sub, .lead { font-size: 18px; }
@@ -979,7 +980,7 @@ const transferApp = {
             <div class="ct-card"><div class="ct-pct"><b>${pct}%</b><span>${s.mb}${NB}MB of ${CT_TOTAL_MB}${NB}MB</span><em class="${done ? "ok" : s.wait > 0 ? "wait" : ""}">${status}</em></div>
             <div class="ct-bar"><i style="width:${pct}%"></i></div>
             <div class="ct-foot" style="justify-content:flex-start">${done ? `<button class="ct-go" data-act="again">Run it again</button>` : `<button class="ct-go ghost" data-act="pause">${s.paused ? "Resume" : "Pause"}</button>`}</div></div>
-            <div class="ct-notes">${s.notes.map((n, i) => `<div class="${i === 0 && s.slowed && !done && n.startsWith("OneDrive") ? "hl" : ""}">${n}</div>`).join("")}</div>`);
+            <div class="ct-notes" aria-live="polite">${s.notes.map((n, i) => `<div class="${i === 0 && s.slowed && !done && n.startsWith("OneDrive") ? "hl" : ""}">${n}</div>`).join("")}</div>`);
         },
       },
     ],
@@ -1063,6 +1064,7 @@ function mountDemo(app) {
       step = Math.max(0, Math.min(d.steps.length - 1, i));
       if (d.onStep) d.onStep(step, api);
       drawSteps(); drawStage(true);
+      liveEl.textContent = `Step ${step + 1} of ${d.steps.length}: ${d.steps[step].title}. ${d.steps[step].caption}`;
       if (push) history.replaceState(null, "", `#${app.id}-${step + 1}`);
     },
     get() { return state; },
@@ -1075,8 +1077,9 @@ function mountDemo(app) {
         <div class="how-nav"></div>
       </div>
       <div class="stage felt"><div class="stage-inner"></div></div>
-    </div>`;
-  const stepsEl = root.querySelector(".steps"), navEl = root.querySelector(".how-nav"), stageEl = root.querySelector(".stage-inner");
+    </div>
+    <p class="sr-only" aria-live="polite"></p>`;
+  const stepsEl = root.querySelector(".steps"), navEl = root.querySelector(".how-nav"), stageEl = root.querySelector(".stage-inner"), liveEl = root.querySelector("[aria-live]");
   function frame(inner) {
     if (d.frame === "phone") return `<div class="phone"><div class="phone-screen"><div class="phone-notch"></div><div class="phone-status">9:41</div>${inner}</div></div>`;
     return `<div class="desk"><div class="desk-screen">${inner}</div></div>`;

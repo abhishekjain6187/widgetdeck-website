@@ -37,5 +37,5 @@ Before publishing, check both light and dark (the toggle in the header) and a ph
 ## Things to keep
 
 - Brand assets are root-absolute (`/favicon.svg`), page assets are relative (`img/...`, `fonts/...`). `404.html` uses root paths for everything because it is served on any URL.
-- Absolute URLs in the head (`canonical`, `og:url`, `og:image`) point at `https://widgetdeck.com/`.
-- Follow `DESIGN.md`: one accent (felt green), Bricolage for display and Geist for text, sentence case, no em-dashes, at most one `·` per line, one orchestrated animation (the deal in the hero). The `design-taste-frontend` skill in `.claude/skills/` has the wider rules.
+- Absolute URLs in the head (`canonical`, `og:url`, `og:image`), `robots.txt` and `sitemap.xml` point at `https://www.widgetdeck.com/`, the primary domain in `CNAME` (the apex redirects to it).
+- Follow `DESIGN.md`: one accent (felt green), Bricolage for display and Geist for text, sentence case, no em-dashes, at most one `·` per line, one orchestrated animation (the deal in the hero). The four design skills in `.claude/skills/` have the wider rules (see `CLAUDE.md`).

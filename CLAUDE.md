@@ -1,6 +1,6 @@
 # widgetdeck.com
 
-The public showcase page for AJ's apps (GitHub `abhishekjain6187`). Repo `abhishekjain6187/widgetdeck-website` is public and served by GitHub Pages from `main` at the root, with the custom domain `widgetdeck.com` (`CNAME`). Everything committed here except `README.md`, `CLAUDE.md`, `DESIGN.md` and dotfiles is published.
+The public showcase page for AJ's apps (GitHub `abhishekjain6187`). Repo `abhishekjain6187/widgetdeck-website` is public and served by GitHub Pages from `main` at the root, with the custom domain `www.widgetdeck.com` (`CNAME`); the apex `widgetdeck.com` redirects to it. Everything committed here except `README.md`, `CLAUDE.md`, `DESIGN.md` and dotfiles is published.
 
 The apps themselves live in private repos: `grocery-check`, `claude-account-switcher`, `cloud-transfer`. Never copy app source or builds into this repo.
 
@@ -14,7 +14,7 @@ The apps themselves live in private repos: `grocery-check`, `claude-account-swit
 
 ## Design rules
 
-`DESIGN.md` has the system. In short: one accent (felt green), Bricolage display set semi-condensed, Geist text, sentence case, no em-dashes, at most one `·` per line, no all-caps or monospace labels, no accent on a single headline word, hero headline at most two lines on desktop, one orchestrated animation (the deal), different How it works layouts for neighbouring apps, reduced-motion and dark-mode support for everything. Skills: `design-taste-frontend` is in `.claude/skills/`; frontend-design, ui-ux-pro-max and web-design-guidelines are installed in the workspace root.
+`DESIGN.md` has the system. In short: one accent (felt green), Bricolage display set semi-condensed, Geist text, sentence case, no em-dashes, at most one `·` per line, no all-caps or monospace labels, no accent on a single headline word, hero headline at most two lines on desktop, one orchestrated animation (the deal), different How it works layouts for neighbouring apps, reduced-motion and dark-mode support for everything. Skills in `.claude/skills/`: `design-taste-frontend`, `frontend-design`, `ui-ux-pro-max` (search script plus data) and `web-design-guidelines` (fetches the latest Vercel rules and reviews files). Use all four for any change; when they disagree, sentence case and `DESIGN.md` win.
 
 ## Checking
 
@@ -22,6 +22,6 @@ Serve the folder (`python -m http.server 8080`) and check light, dark and a phon
 
 Check Safari too, not only Chromium: an iPhone once showed screenshots collapsed to a narrow column because a figure was sized from its content (`min-content`) while its image was capped at 100%. Give sized media explicit widths or aspect ratios. Playwright's WebKit on Windows renders the variable Bricolage font far too condensed; real Safari doesn't, so don't "fix" headings based on that build.
 
-## Status (2026-10-13)
+## Status (2026-10-30)
 
-Live at https://widgetdeck.com with HTTPS enforced (GoDaddy DNS points at GitHub Pages; `www` redirects to the apex over http, and its own https certificate is still pending at GitHub). Ask AJ before adding analytics, forms, third-party scripts or anything that collects data.
+Live at https://www.widgetdeck.com with HTTPS enforced; the certificate covers both `www.widgetdeck.com` and `widgetdeck.com`, and the apex redirects to `www`. Ask AJ before adding analytics, forms, third-party scripts or anything that collects data.
