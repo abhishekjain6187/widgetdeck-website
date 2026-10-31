@@ -77,4 +77,4 @@ Visible focus ring in the accent, skip link, `scroll-padding-top` so the sticky 
 
 ## Sources
 
-Built with the design skills in `.claude/skills/` (taste, frontend-design, ui-ux-pro-max, web-design-guidelines). Direction informed by land-book.com's "How it works" sections (step list beside a product view) and siteinspire.com's minimal category (muted deep greens, restrained type). Where the skills disagreed (web-design-guidelines asks for Title Case, the other two for sentence case), sentence case won.
+Built with four design guides: design-taste-frontend, frontend-design, ui-ux-pro-max and Vercel's web interface guidelines. Direction informed by land-book.com's "How it works" sections (step list beside a product view) and siteinspire.com's minimal category (muted deep greens, restrained type). Where they disagreed (Vercel's guidelines ask for Title Case, the others for sentence case), sentence case won.
