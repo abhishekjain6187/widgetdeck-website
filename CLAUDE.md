@@ -14,7 +14,12 @@ The apps themselves live in private repos: `grocery-check`, `claude-account-swit
 
 ## Design rules
 
-`DESIGN.md` has the system. In short: one accent (felt green), Bricolage display set semi-condensed, Geist text, sentence case, no em-dashes, at most one `·` per line, no all-caps or monospace labels, no accent on a single headline word, hero headline at most two lines on desktop, one orchestrated animation (the deal), different How it works layouts for neighbouring apps, reduced-motion and dark-mode support for everything. Skills in `.claude/skills/`: `design-taste-frontend`, `frontend-design`, `ui-ux-pro-max` (search script plus data) and `web-design-guidelines` (fetches the latest Vercel rules and reviews files). Use all four for any change; when they disagree, sentence case and `DESIGN.md` win.
+`DESIGN.md` has the system. In short: one accent (felt green), Bricolage display set semi-condensed, Geist text, sentence case, no em-dashes, at most one `·` per line, no all-caps or monospace labels, no accent on a single headline word, hero headline at most two lines on desktop, one orchestrated animation (the deal), different How it works layouts for neighbouring apps, reduced-motion and dark-mode support for everything. Skills in `.claude/skills/`: `design-taste-frontend`, `frontend-design`, `ui-ux-pro-max` (search script plus data) and `web-design-guidelines` (reviews files against its bundled copy of Vercel's rules; it never fetches or sends anything). Use all four for any change; when they disagree, sentence case and `DESIGN.md` win.
+
+## Rules that always apply
+
+- Commits, pushes, PRs and tags: plain messages written as AJ. Never add co-author lines, "Generated with" lines, session links or any mention of Claude, Claude Code or Anthropic. `.claude/settings.json` turns Claude Code's attribution off (`attribution`, `includeCoAuthoredBy`); keep it that way.
+- Code and files stay on this PC or in AJ's GitHub repos. Don't upload them anywhere else (claude.ai pages or docs, EAS cloud builds, paste or share sites), and don't load CDNs or remote fonts in the page (fonts, icons and images are self-hosted). The skills in `.claude/skills/` run offline. `.claude/settings.json` blocks the claude.ai publishing tools and connectors and `eas` commands; ask AJ before loosening it.
 
 ## Checking
 
