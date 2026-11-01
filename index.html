@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- GitHub Pages can't send headers, so the policy is here. Scripts run only if their hash is listed:
+     after changing an inline script, update its hash (dev\tools\site\csp_hashes.py). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-CDyYBMS5Dk0yRSXMqbCk6leQS2zQuyHbUG+ags4nAWE=' 'sha256-9a9ZOdNi+fLzM39BGSSePVFX8WV16uZVm1gEmkc4zgg='; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Widgetdeck: small apps that fix everyday annoyances</title>
 <meta name="description" content="Every app AJ is building, with the problem it solves, a walkthrough you can click and real screenshots: Grocery Check, Claude Account Switcher and Cloud Transfer.">
 <link rel="canonical" href="https://www.widgetdeck.com/">
@@ -1133,7 +1136,7 @@ darkQuery.addEventListener("change", () => { if (!document.documentElement.getAt
 /* Deep links: #grocery-3 opens Grocery Check's walkthrough at step 3. */
 function openFromHash() {
   const m = location.hash.match(/^#(.+)-(\d+)$/);
-  if (m && demos[m[1]]) {
+  if (m && Object.hasOwn(demos, m[1])) {
     if (demos[m[1]].api.step() !== +m[2] - 1) demos[m[1]].api.go(+m[2] - 1, false);
     document.getElementById(m[1]).scrollIntoView();
   } else if (location.hash.length > 1) {
