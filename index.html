@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- GitHub Pages can't send headers, so the policy is here. Scripts run only if their hash is listed:
      after changing an inline script, update its hash (dev\tools\site\csp_hashes.py). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-CDyYBMS5Dk0yRSXMqbCk6leQS2zQuyHbUG+ags4nAWE=' 'sha256-btMfo/LE+Vr8ajtz98MY4RQNiBAXyR+Kg4O9UNDZ+iM='; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'sha256-CDyYBMS5Dk0yRSXMqbCk6leQS2zQuyHbUG+ags4nAWE=' 'sha256-apKfm1MVXf8/cFTgH72TBBWE9hBXYZHjkr/mIQzqqXg='; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
 <title>Widgetdeck: small apps that fix everyday annoyances</title>
 <meta name="description" content="Every app AJ is building, with the problem it solves, a walkthrough you can click and real screenshots: Grocery Check, Claude Account Switcher and Cloud Transfer.">
 <link rel="canonical" href="https://www.widgetdeck.com/">
@@ -302,6 +302,19 @@ p { margin: 0; text-wrap: pretty; }
 .g-price { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--g-muted); }
 .g-btn { display: block; width: 100%; min-height: 44px; text-align: center; border: 0; border-radius: 12px; padding: 11px; font-weight: 600; font-size: 13.5px; background: var(--g-accent); color: var(--g-on-accent); }
 .g-btn.soft { background: var(--g-accent-soft); color: var(--g-accent); }
+.g-btn .icon { width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; }
+.phone-nav .end { margin-left: auto; color: var(--g-accent); font-weight: 600; font-size: 13px; }
+.g-foot { padding: 8px 16px; border-top: 1px solid var(--g-border); background: var(--g-bg); }
+.g-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--g-border); background: var(--g-surface); padding: 6px 0 12px; }
+.g-tab { display: grid; justify-items: center; gap: 2px; font-size: 11px; font-weight: 600; color: var(--g-muted); }
+.g-tab .icon { width: 20px; height: 20px; }
+.g-tab.on { color: var(--g-accent); }
+.g-lead { color: var(--g-muted); font-size: 12.5px; line-height: 1.45; }
+.g-group { background: var(--g-surface); border: 1px solid var(--g-border); border-radius: 14px; overflow: hidden; }
+.g-way { display: flex; align-items: center; gap: 10px; padding: 9px 12px; min-height: 44px; }
+.g-way + .g-way { border-top: 1px solid var(--g-border); }
+.g-way .icon { width: 20px; height: 20px; color: var(--g-accent); flex: none; }
+.g-way small { display: block; color: var(--g-muted); font-size: 11.5px; }
 .g-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .g-tile { display: grid; justify-items: center; gap: 6px; padding: 14px 6px; border-radius: 14px; border: 1px solid var(--g-border); background: var(--g-surface); color: var(--g-text); font-size: 12.5px; font-weight: 600; }
 .g-tile:hover { border-color: var(--g-accent); }
@@ -477,6 +490,11 @@ footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
 <symbol id="i-barcode" viewBox="0 0 256 256"><path d="M232,48V88a8,8,0,0,1-16,0V56H184a8,8,0,0,1,0-16h40A8,8,0,0,1,232,48ZM72,200H40V168a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16Zm152-40a8,8,0,0,0-8,8v32H184a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V168A8,8,0,0,0,224,160ZM32,96a8,8,0,0,0,8-8V56H72a8,8,0,0,0,0-16H32a8,8,0,0,0-8,8V88A8,8,0,0,0,32,96ZM80,80a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,80,80Zm104,88V88a8,8,0,0,0-16,0v80a8,8,0,0,0,16,0ZM144,80a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,144,80Zm-32,0a8,8,0,0,0-8,8v80a8,8,0,0,0,16,0V88A8,8,0,0,0,112,80Z"/></symbol>
+<symbol id="i-basket" viewBox="0 0 256 256"><path d="M136,120v56a8,8,0,0,1-16,0V120a8,8,0,0,1,16,0Zm36.84-.8-5.6,56A8,8,0,0,0,174.4,184a7.32,7.32,0,0,0,.81,0,8,8,0,0,0,7.95-7.2l5.6-56a8,8,0,0,0-15.92-1.6Zm-89.68,0a8,8,0,0,0-15.92,1.6l5.6,56a8,8,0,0,0,8,7.2,7.32,7.32,0,0,0,.81,0,8,8,0,0,0,7.16-8.76ZM239.93,89.06,224.86,202.12A16.06,16.06,0,0,1,209,216H47a16.06,16.06,0,0,1-15.86-13.88L16.07,89.06A8,8,0,0,1,24,80H68.37L122,18.73a8,8,0,0,1,12,0L187.63,80H232a8,8,0,0,1,7.93,9.06ZM89.63,80h76.74L128,36.15ZM222.86,96H33.14L47,200H209Z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z"/></symbol>
+<symbol id="i-gear-six" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z"/></symbol>
+<symbol id="i-pencil-simple" viewBox="0 0 256 256"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"/></symbol>
+<symbol id="i-receipt" viewBox="0 0 256 256"><path d="M72,104a8,8,0,0,1,8-8h96a8,8,0,0,1,0,16H80A8,8,0,0,1,72,104Zm8,40h96a8,8,0,0,0,0-16H80a8,8,0,0,0,0,16ZM232,56V208a8,8,0,0,1-11.58,7.15L192,200.94l-28.42,14.21a8,8,0,0,1-7.16,0L128,200.94,99.58,215.15a8,8,0,0,1-7.16,0L64,200.94,35.58,215.15A8,8,0,0,1,24,208V56A16,16,0,0,1,40,40H216A16,16,0,0,1,232,56Zm-16,0H40V195.06l20.42-10.22a8,8,0,0,1,7.16,0L96,199.06l28.42-14.22a8,8,0,0,1,7.16,0L160,199.06l28.42-14.22a8,8,0,0,1,7.16,0L216,195.06Z"/></symbol>
 <symbol id="i-camera" viewBox="0 0 256 256"><path d="M208,56H180.28L166.65,35.56A8,8,0,0,0,160,32H96a8,8,0,0,0-6.65,3.56L75.71,56H48A24,24,0,0,0,24,80V192a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V80A24,24,0,0,0,208,56Zm8,136a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H80a8,8,0,0,0,6.66-3.56L100.28,48h55.43l13.63,20.44A8,8,0,0,0,176,72h32a8,8,0,0,1,8,8ZM128,88a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,88Zm0,72a28,28,0,1,1,28-28A28,28,0,0,1,128,160Z"/></symbol>
 <symbol id="i-caret-down" viewBox="0 0 256 256"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></symbol>
 <symbol id="i-caret-right" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"/></symbol>
@@ -630,7 +648,13 @@ const METHODS = {
   barcode: { label: "Scan barcodes",    icon: "barcode",        busy: "Looking up product barcodes…" },
   paste:   { label: "Paste text",       icon: "clipboard-text", busy: "Reading the pasted receipt…" },
 };
-const gScreen = (title, body) => `<div class="phone-nav"><span class="back" aria-hidden="true">←</span>${title}</div><div class="phone-body">${body}</div>`;
+const gScreen = (title, body) => `<div class="phone-nav"><span class="back" aria-hidden="true">←</span>${title}</div><div class="phone-body" tabindex="0" aria-label="${title} screen">${body}</div>`;
+/* The List tab: the list, Check receipt pinned at the bottom, and the tab bar. */
+const gListScreen = (body, foot) => `<div class="phone-nav">Shopping list<span class="end">Lists</span></div><div class="phone-body" tabindex="0" aria-label="Shopping list screen">${body}</div>
+  <div class="g-foot">${foot}</div>
+  <div class="g-tabs" aria-hidden="true">${[["basket", "List"], ["clock", "Trips"], ["gear-six", "Settings"]].map(([i, l], n) => `<span class="g-tab ${n ? "" : "on"}">${ico(i)}${l}</span>`).join("")}</div>`;
+const gItem = i => `<div class="g-card g-row"><span class="nm">${i.name}<small>about ${money(i.est)} each</small></span><span class="g-step" aria-label="Quantity 1">−<span>1</span>+</span></div>`;
+const gCheckReceipt = `<button class="g-btn" type="button" tabindex="-1">${ico("receipt")}Check receipt</button>`;
 
 const groceryApp = {
   id: "grocery",
@@ -646,13 +670,14 @@ const groceryApp = {
   problem: "You get home and realise you forgot the spinach, and the bill is higher than planned because a few things jumped into the cart. Nothing tells you either until it’s too late.",
   features: [
     { title: "Your list, with expected prices", text: "Add items and quantities with an optional price, so the app knows roughly what the shop should cost." },
-    { title: "Photo of the receipt", text: "Snap the paper receipt and it’s read on your phone. Nothing is uploaded." },
+    { title: "Photo of the receipt", text: "Snap the paper receipt: it’s read on your phone, never uploaded, and you go straight to the results." },
     { title: "Barcodes or pasted text", text: "Scan product barcodes, paste an e-receipt from email, or type items in by hand." },
     { title: "Receipt shorthand understood", text: "“CHKN BRST BNLS” is matched to “chicken breast” automatically, and any match can be fixed with a tap." },
     { title: "Missed and extra, with the cost", text: "See what you missed, what wasn’t on the list, and how much those extras added to the bill." },
+    { title: "Ready for next time", text: "Update list takes off what you got and keeps what you missed for the next shop." },
   ],
   notes: [
-    "Lists and trips stay on the phone. The only thing sent anywhere is a barcode lookup to Open Food Facts, a free public product database.",
+    "Lists and trips stay on the phone. A barcode lookup sends only the barcode number to Open Food Facts; Google’s ML Kit, which reads receipts on the phone, sends Google usage numbers but never your photos; and backup to your Google account is off unless you turn it on.",
     "Most printed receipt barcodes only hold a transaction number, not the items, so the photo is the main way in.",
     "Light and dark mode follow the phone’s setting.",
   ],
@@ -664,39 +689,41 @@ const groceryApp = {
   ],
   demo: {
     frame: "phone",
-    init: () => ({ method: null, scanning: false }),
+    init: () => ({ scanning: false }),
     steps: [
       {
-        title: "Make the list",
-        caption: "Add what you need before you leave. Expected prices are optional, but they let the app say what the shop should cost.",
+        title: "Your list",
+        caption: "The app opens on your list. Add what you need, with a price if you like, and Check receipt is always there at the bottom.",
         render: () => {
           const est = GROCERY_LIST.reduce((t, i) => t + i.est, 0);
-          return gScreen("Weekly shop", `
-            <div class="g-h2">${GROCERY_LIST.length} items <small>about ${money(est)}</small></div>
-            ${GROCERY_LIST.map(i => `<div class="g-card g-row"><span class="nm">${i.name}<small>about ${money(i.est)} each</small></span><span class="g-step" aria-label="Quantity 1">−<span>1</span>+</span></div>`).join("")}
-            <button class="g-btn" type="button" tabindex="-1">Check receipt</button>`);
+          return gListScreen(`<div class="g-h2">${GROCERY_LIST.length} items <small>about ${money(est)}</small></div>${GROCERY_LIST.map(gItem).join("")}`, gCheckReceipt);
         },
       },
       {
-        title: "Add the receipt",
-        caption: "After checkout, tap Check receipt and add what you bought by photo, barcodes or pasted text. Pick one to watch each line get matched to your list.",
+        title: "Take a photo",
+        caption: "After checkout, tap Check receipt and take a photo of the receipt. It's read on your phone and goes straight to the results. Try Take photo.",
         on: {
-          method: (s, api, el) => {
-            api.set({ method: el.dataset.m, scanning: true });
-            setTimeout(() => api.set({ scanning: false }), 1500);
+          photo: (s, api) => {
+            api.set({ scanning: true });
+            setTimeout(() => {
+              api.set({ scanning: false });
+              api.go(2);
+            }, 1600);
           },
-          rescan: (s, api) => api.set({ method: null, scanning: false }),
         },
         render: s => {
-          if (!s.method) return gScreen("What you bought", `
-            <div class="g-sub" style="margin:0 0 4px">Add what you bought for “Weekly shop”. Use any mix of these.</div>
-            <div class="g-grid">${Object.entries(METHODS).map(([k, m]) => `<button class="g-tile" data-act="method" data-m="${k}">${ico(m.icon)}${m.label}</button>`).join("")}</div>`);
-          if (s.scanning) return gScreen("What you bought", `<div class="g-h2">${METHODS[s.method].busy}</div>
+          if (s.scanning) return gScreen("Check receipt", `<div class="g-h2">Reading your receipt…</div>
             <div class="viewfinder">${receiptHTML(false)}<div class="scanline"></div></div>`);
-          return gScreen("What you bought", `
-            <div class="g-note">${ico("check-circle-fill")}Found 8 items. Check them below and fix anything that looks off.</div>
-            <div class="viewfinder">${receiptHTML(true)}</div>
-            <button class="g-btn soft" data-act="rescan">Try another way</button>`);
+          return gScreen("Check receipt", `
+            <div class="g-lead">Take a photo of the whole receipt, flat and in good light. You'll see what you missed straight away.</div>
+            <button class="g-btn" data-act="photo">${ico("camera")}Take photo</button>
+            <button class="g-btn soft" data-act="photo">${ico("images")}Choose photo</button>
+            <div class="g-h2">Other ways</div>
+            <div class="g-group">
+              <div class="g-way">${ico("clipboard-text")}<span>Paste receipt text<small>From an email or a store's app</small></span></div>
+              <div class="g-way">${ico("barcode")}<span>Scan barcodes<small>Scan each product, in the shop or at home</small></span></div>
+              <div class="g-way">${ico("pencil-simple")}<span>Type what you bought<small>Add items and prices yourself</small></span></div>
+            </div>`);
         },
       },
       {
@@ -717,7 +744,19 @@ const groceryApp = {
           <div class="g-h2">Not on your list <small style="color:var(--g-extra);font-weight:700">+${money(c.extraTotal)}</small></div>
           ${c.extras.map(r => `<div class="g-line extra">${ico("plus-circle-fill")}<span class="nm">${r.label}</span><span class="g-price">${money(r.price)}</span></div>`).join("")}
           <div class="g-h2">Got from your list</div>
-          ${c.got.map(g => `<div class="g-line got">${ico("check-circle-fill")}<span class="nm">${g.item.name}</span><span class="g-price">${money(g.price)}</span></div>`).join("")}`);
+          ${c.got.map(g => `<div class="g-line got">${ico("check-circle-fill")}<span class="nm">${g.item.name}</span><span class="g-price">${money(g.price)}</span></div>`).join("")}
+          <div class="g-card" style="display:grid;gap:8px;margin-top:6px"><span>Take the ${c.got.length} things you got off your list? The ${c.missed.length} things left stay on it for next time.</span>
+            <button class="g-btn" data-act="update">${ico("check")}Update list</button></div>`);
+        },
+        on: { update: (s, api) => api.go(3) },
+      },
+      {
+        title: "Ready for next time",
+        caption: "Update list takes off what you got and keeps what you missed, so the list is ready for the next shop.",
+        render: () => {
+          const { missed } = groceryCompare();
+          return gListScreen(`<div class="g-note">${ico("check-circle-fill")}List updated. Your list has ${missed.length} things on it now.</div>
+            <div class="g-h2">${missed.length} items <small>about ${money(missed.reduce((t, i) => t + i.est, 0))}</small></div>${missed.map(gItem).join("")}`, gCheckReceipt);
         },
       },
     ],
