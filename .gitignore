@@ -5,3 +5,8 @@ __pycache__/
 # Local working files, kept on this PC only
 .claude/
 CLAUDE.md
+
+# Environment files: never commit them; keep only an example
+.env
+.env.*
+!.env.example

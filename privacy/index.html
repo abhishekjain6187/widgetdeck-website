@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- No scripts on this page; same policy as the home page otherwise. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Privacy | Widgetdeck</title>
+<meta name="description" content="What the Widgetdeck website and its apps (Grocery Check, Cloud Transfer and Claude Account Switcher) collect, where it stays, and how to delete it.">
+<link rel="canonical" href="https://www.widgetdeck.com/privacy/">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<style>
+@font-face { font-family: "Bricolage"; src: url(/fonts/Bricolage-Variable.woff2) format("woff2"); font-weight: 200 800; font-stretch: 75% 100%; font-display: swap; }
+@font-face { font-family: "Geist"; src: url(/fonts/Geist-Variable.woff2) format("woff2"); font-weight: 100 900; font-display: swap; }
+:root { --bg: #F2F2EE; --surface: #FAFAF7; --ink: #1C2320; --muted: #56605B; --line: #D8DBD3; --accent: #23453A; color-scheme: light; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0F1512; --surface: #161E1A; --ink: #E5EAE6; --muted: #A3ADA7; --line: #29332E; --accent: #93C3A9; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.65 "Geist", ui-sans-serif, system-ui, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 32px max(20px, env(safe-area-inset-left)) 80px; }
+.home { display: inline-flex; align-items: center; min-height: 44px; font: 650 20px/1 "Bricolage", "Geist", sans-serif; font-stretch: 90%; color: var(--ink); text-decoration: none; }
+h1, h2 { font-family: "Bricolage", "Geist", sans-serif; font-stretch: 86%; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+h1 { font-size: clamp(40px, 7vw, 60px); margin: 40px 0 12px; }
+h2 { font-size: 28px; margin: 48px 0 8px; padding-top: 24px; border-top: 1px solid var(--line); }
+h3 { font-size: 18px; margin: 24px 0 4px; }
+p, li { max-width: 68ch; }
+ul { padding-left: 1.2em; }
+li { margin: 6px 0; }
+.lede { font-size: 19px; color: var(--muted); }
+.meta { color: var(--muted); font-size: 15px; }
+footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="home" href="/" translate="no">Widgetdeck</a>
+
+  <h1>Privacy</h1>
+  <p class="lede">What the Widgetdeck website and its apps collect, where it stays, and how to delete it. In short: no accounts, no ads, no tracking, and nothing sold or shared.</p>
+  <p class="meta">Effective 12 November 2026. If this changes, the new version and its date appear here.</p>
+
+  <h2>Who runs Widgetdeck</h2>
+  <p>Widgetdeck is run by one person, AJ (<a href="https://github.com/abhishekjain6187">abhishekjain6187 on GitHub</a>), not a company. It shows apps that are being built. Questions or requests about your information: <strong>CONTACT EMAIL TO ADD BEFORE PUBLISHING</strong>.</p>
+
+  <h2>This website</h2>
+  <ul>
+    <li>No cookies, no analytics, no ads, no forms, and nothing loaded from other sites: the fonts and pictures come from widgetdeck.com itself.</li>
+    <li>If you pick light or dark with the switch, that choice is kept in your browser's local storage so the next visit looks the same. It never leaves your browser, and clearing your browser's site data removes it. Nothing else is stored.</li>
+    <li>The site is hosted by GitHub Pages. Like any web host, GitHub receives your IP address and browser details when you visit, and handles them under the <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHub General Privacy Statement</a>. Widgetdeck doesn't get those logs.</li>
+  </ul>
+
+  <h2>Grocery Check</h2>
+  <ul>
+    <li>There's no account. Your lists, trips and the text read from your receipts are kept only in the app on your phone.</li>
+    <li>Receipt photos and barcodes are read on the phone by Google's ML Kit. The photos are never uploaded. ML Kit sends Google usage and performance numbers about the reading itself, not your photos or what's in them, under the <a href="https://developers.google.com/ml-kit/terms">ML Kit terms</a>.</li>
+    <li>When you scan a product's barcode, the barcode number is sent to <a href="https://world.openfoodfacts.org/privacy">Open Food Facts</a>, a free product database, to look up the product's name. Like any website, they also receive your phone's IP address.</li>
+    <li>Back up to my Google account (Android) is off unless you turn it on. If you do, Android copies your lists, trips and receipt text to your Google account with the phone's backup, under Google's terms. Grocery Check can't see or delete that copy.</li>
+    <li>To delete everything: Settings, Your data, Delete all lists and trips. Uninstalling the app removes it all from the phone. Backup copies are managed in your Google account.</li>
+  </ul>
+
+  <h2>Cloud Transfer (in testing)</h2>
+  <ul>
+    <li>Cloud Transfer signs in to Google Drive and OneDrive only when you ask it to, with the permissions shown on Google's and Microsoft's own sign-in pages, so it can show and copy the files you pick.</li>
+    <li>In the Windows app everything stays on your PC: the sign-ins (encrypted), the list of your transfers with the names of the files and folders in them, and your settings. Nothing is sent to Widgetdeck. Google Drive and OneDrive files go from one cloud to the other through your PC's memory. iCloud Drive and iCloud Photos work through the iCloud folder that Apple's iCloud for Windows keeps on your PC.</li>
+    <li>Information from your Google account is used only to show and copy the files you choose. It isn't used for ads, isn't sold, isn't shared with anyone else, and isn't used to train AI models. Cloud Transfer's use of information received from Google APIs follows the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</li>
+    <li>To delete: disconnect an account in Accounts to delete its sign-in; use Settings, Your data, Delete transfer history; and remove Cloud Transfer's access in your <a href="https://myaccount.google.com/connections">Google</a> or <a href="https://account.live.com/consent/Manage">Microsoft</a> account. To remove everything, quit the app and delete the <code>%APPDATA%\Cloud Transfer</code> folder.</li>
+    <li>A hosted version that runs transfers in the cloud doesn't exist yet. This page will say how it handles your information before it does.</li>
+  </ul>
+
+  <h2>Claude Account Switcher</h2>
+  <ul>
+    <li>It runs only on your PC and makes no internet connections.</li>
+    <li>It never reads, copies or stores your Claude sign-in credentials. To label your accounts in its menu, it reads the email address of the signed-in account from Claude's own settings file.</li>
+    <li>It keeps your list of accounts in <code>%APPDATA%\ClaudeSwitch</code>, with a log of any errors. Uninstalling leaves that folder so a reinstall keeps your accounts; delete it to remove everything.</li>
+  </ul>
+
+  <h2>What Widgetdeck doesn't do</h2>
+  <ul>
+    <li>Sell or share personal information, show ads, or track you across sites or apps.</li>
+    <li>Respond differently to "Do Not Track" signals: nothing tracks you either way.</li>
+    <li>Knowingly collect information from children under 13. None of the apps is meant for children.</li>
+  </ul>
+
+  <h2>Your choices</h2>
+  <p>Everything the apps keep is on your own devices or in your own Google, Microsoft or Apple accounts, so you can see it, change it and delete it there, as described above. Widgetdeck has no servers that hold your information. If you have a question or a request, use the contact above.</p>
+
+  <footer>
+    <p>© 2026 Widgetdeck. <a href="/">Back to the apps</a></p>
+  </footer>
+</div>
+</body>
+</html>
